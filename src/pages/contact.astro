@@ -94,6 +94,15 @@ import Layout from "../layouts/Layout.astro";
 
     .message.success { color: #7a9e7e; }
     .message.error   { color: #9e7a7a; }
+
+    /* Honeypot : retiré du flux et masqué aux humains (les bots le voient) */
+    .hp-field {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
   </style>
 
   <div class="contact-wrapper">
@@ -120,6 +129,14 @@ import Layout from "../layouts/Layout.astro";
         <textarea id="message" name="message" required></textarea>
       </div>
 
+      {/* Anti-spam : champ piège (honeypot) — invisible pour les humains */}
+      <div class="hp-field" aria-hidden="true">
+        <label for="website">Ne pas remplir ce champ</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
+      {/* Anti-spam : horodatage de chargement, rempli par JS */}
+      <input type="hidden" name="ts" id="ts" />
+
       <button type="submit" id="submit-btn">Envoyer</button>
 
       <p id="form-message" class="message" style="display:none"></p>
@@ -130,6 +147,10 @@ import Layout from "../layouts/Layout.astro";
     const form = document.getElementById('contact-form') as HTMLFormElement
     const btn = document.getElementById('submit-btn') as HTMLButtonElement
     const msg = document.getElementById('form-message') as HTMLParagraphElement
+    const ts = document.getElementById('ts') as HTMLInputElement
+
+    // Anti-spam : enregistre l'instant où la page est prête (piège temporel)
+    ts.value = String(Date.now())
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault()

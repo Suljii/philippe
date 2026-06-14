@@ -15,10 +15,23 @@ const photoAccueil = "/accueil.jpg";
       padding: 2.5rem 6rem;
     }
 
+    @media (max-width: 768px) {
+      .hero {
+        height: calc(100vh - 70px);
+        padding: 1.25rem;
+      }
+    }
+
     .hero-frame {
       height: 100%;
       max-width: 1000px;
       width: 100%;
+    }
+
+    .hero-frame a {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .hero-frame img {
@@ -26,12 +39,19 @@ const photoAccueil = "/accueil.jpg";
       height: 100%;
       object-fit: contain;
       display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .hero-frame a:hover img {
+      opacity: 0.85;
     }
   </style>
 
   <div class="hero">
     <div class="hero-frame">
-      <img src={photoAccueil} alt="Philippe Muraro — Photographe" />
+      <a href="/galeries" aria-label="Voir les galeries">
+        <img src={photoAccueil} alt="Philippe Muraro — Photographe" />
+      </a>
     </div>
   </div>
 </Layout>

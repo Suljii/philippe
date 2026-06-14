@@ -11,10 +11,33 @@ export const POST: APIRoute = async ({ request }) => {
   const nom = data.get('nom')?.toString().trim()
   const email = data.get('email')?.toString().trim()
   const message = data.get('message')?.toString().trim()
+  const honeypot = data.get('website')?.toString().trim()
+  const ts = Number(data.get('ts'))
 
-  // Validation basique
+  // Réponse "succès" silencieuse pour les bots (on ne les informe pas du rejet)
+  const fakeSuccess = () =>
+    new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+  // Anti-spam 1 : le honeypot doit rester vide (seuls les bots le remplissent)
+  if (honeypot) return fakeSuccess()
+
+  // Anti-spam 2 : piège temporel — soumission trop rapide = bot (< 3 s)
+  if (!ts || Date.now() - ts < 3000) return fakeSuccess()
+
+  // Validation des champs
   if (!nom || !email || !message) {
     return new Response(JSON.stringify({ error: 'Champs manquants.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+
+  // Validation du format d'email
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return new Response(JSON.stringify({ error: 'Adresse email invalide.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     })

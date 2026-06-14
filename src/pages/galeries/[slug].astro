@@ -1,6 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { sanityClient, urlFor } from "../../lib/sanity";
+import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
+
+const CARD_WIDTHS = [400, 600, 800, 1200];
+const CARD_SIZES = "(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 300px";
+const FULL_WIDTHS = [1000, 1600, 2000, 2600, 3200];
+const FULL_SIZES = "92vw";
 
 export const prerender = false;
 
@@ -19,12 +24,13 @@ const galerie = await sanityClient.fetch(
       titreHomepage,
       nom,
       "slug": slug.current,
-      "couverture": coalesce(images[0].miniature, images[0].image)
+      "couverture": coalesce(images[0].image, images[0].miniature),
+      "lqip": coalesce(images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
     },
     images[] {
       titre,
       image,
-      miniature
+      "lqip": image.asset->metadata.lqip
     }
   }
 `,
@@ -113,16 +119,24 @@ const aTexte = !!galerie.texte;
     }
 
     figure { margin: 0; }
-    figure a { display: block; }
+    .photo {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: zoom-in;
+      overflow: hidden;
+    }
     figure img {
       width: 100%;
       display: block;
-      aspect-ratio: 3/2;
+      aspect-ratio: 1/1;
       object-fit: cover;
       filter: brightness(0.9);
-      transition: opacity 0.3s;
+      transition: opacity 0.3s, transform 0.4s ease;
     }
-    figure:hover img { opacity: 0.8; }
+    .photo:hover img { opacity: 0.85; transform: scale(1.03); }
 
     figcaption {
       margin-top: 0.4rem;
@@ -136,7 +150,7 @@ const aTexte = !!galerie.texte;
     .card { text-decoration: none; color: inherit; display: block; }
     .card img {
       width: 100%;
-      aspect-ratio: 4/3;
+      aspect-ratio: 1/1;
       object-fit: cover;
       display: block;
       filter: brightness(0.85);
@@ -150,6 +164,80 @@ const aTexte = !!galerie.texte;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #aaa;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 10, 0.95);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(4px);
+    }
+    .lightbox.open { opacity: 1; visibility: visible; }
+
+    .lb-stage {
+      margin: 0;
+      max-width: 92vw;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    #lb-img {
+      max-width: 92vw;
+      max-height: 84vh;
+      object-fit: contain;
+      box-shadow: 0 10px 60px rgba(0, 0, 0, 0.6);
+      transform: scale(0.97);
+      transition: transform 0.3s ease;
+    }
+    .lightbox.open #lb-img { transform: scale(1); }
+    #lb-caption {
+      color: #bbb;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      font-weight: 300;
+      text-align: center;
+      min-height: 1em;
+    }
+
+    .lb-close, .lb-nav {
+      position: fixed;
+      background: none;
+      border: 0;
+      color: #ddd;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s, transform 0.2s;
+      user-select: none;
+    }
+    .lb-close:hover, .lb-nav:hover { color: #fff; }
+    .lb-close {
+      top: 1.2rem;
+      right: 1.6rem;
+      font-size: 2.6rem;
+    }
+    .lb-nav {
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 3.5rem;
+      padding: 0 1.2rem;
+    }
+    .lb-nav:hover { transform: translateY(-50%) scale(1.15); }
+    .lb-prev { left: 0.5rem; }
+    .lb-next { right: 0.5rem; }
+
+    @media (max-width: 600px) {
+      .lb-nav { font-size: 2.4rem; padding: 0 0.5rem; }
+      .lb-close { font-size: 2rem; }
     }
   </style>
 
@@ -172,8 +260,13 @@ const aTexte = !!galerie.texte;
         <a href={`/galeries/${sg.slug}`} class="card">
           {sg.couverture && (
             <img
-              src={urlFor(sg.couverture).width(900).format('webp').quality(90).url()}
+              src={imgSrc(sg.couverture, 800, { square: true })}
+              srcset={imgSrcSet(sg.couverture, CARD_WIDTHS, { square: true })}
+              sizes={CARD_SIZES}
               alt={sg.nom || sg.titreHomepage}
+              loading="lazy"
+              decoding="async"
+              style={sg.lqip ? `background-image:url(${sg.lqip});background-size:cover;background-position:center` : undefined}
             />
           )}
           <div class="card-info">
@@ -188,12 +281,24 @@ const aTexte = !!galerie.texte;
       <div class="grid">
         {galerie.images?.map((item: any) => (
           <figure>
-            <a href={urlFor(item.image).width(2600).format('webp').quality(95).url()} target="_blank">
+            <button
+              type="button"
+              class="photo"
+              data-full={imgSrc(item.image, 2000)}
+              data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
+              data-sizes={FULL_SIZES}
+              data-caption={item.titre || ''}
+            >
               <img
-                src={urlFor(item.image).width(1300).format('webp').quality(90).url()}
+                src={imgSrc(item.image, 800, { square: true })}
+                srcset={imgSrcSet(item.image, CARD_WIDTHS, { square: true })}
+                sizes={CARD_SIZES}
                 alt={item.titre || titre}
+                loading="lazy"
+                decoding="async"
+                style={item.lqip ? `background-image:url(${item.lqip});background-size:cover;background-position:center` : undefined}
               />
-            </a>
+            </button>
             {item.titre && <figcaption>{item.titre}</figcaption>}
           </figure>
         ))}
@@ -203,15 +308,110 @@ const aTexte = !!galerie.texte;
     <div class="grid">
       {galerie.images?.map((item: any) => (
         <figure>
-          <a href={urlFor(item.image).width(2000).format('webp').quality(90).url()} target="_blank">
+          <button
+            type="button"
+            class="photo"
+            data-full={imgSrc(item.image, 2000)}
+            data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
+            data-sizes={FULL_SIZES}
+            data-caption={item.titre || ''}
+          >
             <img
-              src={urlFor(item.miniature || item.image).width(900).format('webp').quality(80).url()}
+              src={imgSrc(item.image, 800, { square: true })}
+              srcset={imgSrcSet(item.image, CARD_WIDTHS, { square: true })}
+              sizes={CARD_SIZES}
               alt={item.titre || titre}
+              loading="lazy"
+              decoding="async"
+              style={item.lqip ? `background-image:url(${item.lqip});background-size:cover;background-position:center` : undefined}
             />
-          </a>
+          </button>
           {item.titre && <figcaption>{item.titre}</figcaption>}
         </figure>
       ))}
     </div>
   )}
+
+  {/* ── Lightbox / modale plein écran ── */}
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lb-close" aria-label="Fermer">×</button>
+    <button class="lb-nav lb-prev" aria-label="Précédent">‹</button>
+    <button class="lb-nav lb-next" aria-label="Suivant">›</button>
+    <figure class="lb-stage">
+      <img id="lb-img" src="" alt="" />
+      <figcaption id="lb-caption"></figcaption>
+    </figure>
+  </div>
+
+  <script>
+    const lb = document.getElementById('lightbox') as HTMLElement;
+    const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+    const lbCap = document.getElementById('lb-caption') as HTMLElement;
+    const photos = Array.from(document.querySelectorAll<HTMLButtonElement>('.photo'));
+    let index = -1;
+    let preloadedAll = false;
+
+    function preload(i: number) {
+      const btn = photos[i];
+      if (!btn) return;
+      const img = new Image();
+      if (btn.dataset.sizes) img.sizes = btn.dataset.sizes;
+      if (btn.dataset.srcset) img.srcset = btn.dataset.srcset;
+      img.src = btn.dataset.full || '';
+    }
+
+    function preloadAll() {
+      if (preloadedAll) return;
+      preloadedAll = true;
+      const run = () => photos.forEach((_, i) => preload(i));
+      if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run);
+      else setTimeout(run, 200);
+    }
+
+    function show(i: number) {
+      if (i < 0) i = photos.length - 1;
+      if (i >= photos.length) i = 0;
+      index = i;
+      const btn = photos[i];
+      lbImg.srcset = btn.dataset.srcset || '';
+      lbImg.sizes = btn.dataset.sizes || '';
+      lbImg.src = btn.dataset.full || '';
+      const cap = btn.dataset.caption || '';
+      lbImg.alt = cap;
+      lbCap.textContent = cap;
+      // précharge les voisines pour une navigation instantanée
+      preload(i + 1 >= photos.length ? 0 : i + 1);
+      preload(i - 1 < 0 ? photos.length - 1 : i - 1);
+    }
+
+    function open(i: number) {
+      show(i);
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      preloadAll();
+    }
+
+    function close() {
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    photos.forEach((btn, i) => btn.addEventListener('click', () => open(i)));
+
+    lb.querySelector('.lb-close')!.addEventListener('click', close);
+    lb.querySelector('.lb-prev')!.addEventListener('click', (e) => { e.stopPropagation(); show(index - 1); });
+    lb.querySelector('.lb-next')!.addEventListener('click', (e) => { e.stopPropagation(); show(index + 1); });
+
+    // Clic sur le fond (hors image) ferme
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(index - 1);
+      else if (e.key === 'ArrowRight') show(index + 1);
+    });
+  </script>
 </Layout>

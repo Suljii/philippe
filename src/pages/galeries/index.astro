@@ -1,6 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { sanityClient, urlFor } from "../../lib/sanity";
+import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
+
+const CARD_WIDTHS = [400, 600, 800, 1200];
+const CARD_SIZES = "(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 300px";
 
 // Galeries de premier niveau uniquement (catégories + galeries simples).
 // Les sous-galeries (ex. les golfs) n'apparaissent PAS ici.
@@ -9,10 +12,12 @@ const galeries = await sanityClient.fetch(`
     titreHomepage,
     "slug": slug.current,
     "couverture": coalesce(
-      images[0].miniature,
       images[0].image,
-      *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc)[0].images[0].miniature,
       *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc)[0].images[0].image
+    ),
+    "lqip": coalesce(
+      images[0].image.asset->metadata.lqip,
+      *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc)[0].images[0].image.asset->metadata.lqip
     )
   }
 `);
@@ -43,7 +48,7 @@ const galeries = await sanityClient.fetch(`
 
     .card img {
       width: 100%;
-      aspect-ratio: 4/3;
+      aspect-ratio: 1/1;
       object-fit: cover;
       display: block;
       filter: brightness(0.85);
@@ -83,8 +88,13 @@ const galeries = await sanityClient.fetch(`
         <a href={`/galeries/${galerie.slug}`} class="card">
           {galerie.couverture && (
             <img
-              src={urlFor(galerie.couverture).width(900).format('webp').quality(90).url()}
+              src={imgSrc(galerie.couverture, 800, { square: true })}
+              srcset={imgSrcSet(galerie.couverture, CARD_WIDTHS, { square: true })}
+              sizes={CARD_SIZES}
               alt={galerie.titreHomepage}
+              loading="lazy"
+              decoding="async"
+              style={galerie.lqip ? `background-image:url(${galerie.lqip});background-size:cover;background-position:center` : undefined}
             />
           )}
           <div class="card-info">

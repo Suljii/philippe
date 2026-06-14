@@ -123,6 +123,37 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         user-select: none;
       }
 
+      /* ── HAMBURGER (mobile uniquement) ── */
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        z-index: 110;
+      }
+      .nav-toggle span {
+        display: block;
+        height: 2px;
+        width: 26px;
+        background: var(--color-text);
+        transition: transform 0.3s ease, opacity 0.2s ease;
+      }
+      .nav-toggle[aria-expanded='true'] span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .nav-toggle[aria-expanded='true'] span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-toggle[aria-expanded='true'] span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
       /* ── MAIN ── */
       main {
         flex: 1;
@@ -162,6 +193,52 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         background: transparent;
         z-index: 100;
       }
+
+      /* ── MOBILE ── */
+      @media (max-width: 768px) {
+        :root {
+          --h-padding: 1.25rem;
+          --nav-height: 70px;
+        }
+
+        .logo .name { font-size: 1.25rem; }
+        .logo .subtitle { font-size: 0.55rem; letter-spacing: 0.2em; }
+
+        .nav-toggle { display: flex; }
+
+        /* Nav en panneau déroulant plein largeur */
+        nav {
+          position: fixed;
+          top: var(--nav-height);
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          background: rgba(20, 20, 20, 0.98);
+          backdrop-filter: blur(6px);
+          border-top: 1px solid var(--color-border);
+          padding: 0.5rem 0;
+          transform: translateY(-12px);
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+        }
+        nav.open {
+          transform: translateY(0);
+          opacity: 1;
+          visibility: visible;
+        }
+        nav a {
+          padding: 1rem var(--h-padding);
+          font-size: 1rem;
+          border-bottom: 1px solid #262626;
+        }
+        nav .sep { display: none; }
+
+        main.standard {
+          padding: calc(var(--nav-height) + 2rem) var(--h-padding) 3rem;
+        }
+      }
     </style>
   </head>
   <body class={fullscreen ? 'is-fullscreen' : ''}>
@@ -171,7 +248,11 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         <span class="subtitle">Photographe</span>
       </a>
 
-      <nav>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav id="site-nav">
         <a href="/galeries" class={galeriesActive ? 'active' : ''}>Galeries</a>
         <span class="sep">|</span>
         <a href="/textimages" class={currentPath === '/textimages' ? 'active' : ''}>Textimages</a>
@@ -189,5 +270,21 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
     <footer>
       <p>jbraczyk 2026</p>
     </footer>
+
+    <script>
+      const toggle = document.getElementById('nav-toggle');
+      const nav = document.getElementById('site-nav');
+      toggle?.addEventListener('click', () => {
+        const open = nav?.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      // Ferme le menu quand on clique un lien
+      nav?.querySelectorAll('a').forEach((a) =>
+        a.addEventListener('click', () => {
+          nav.classList.remove('open');
+          toggle?.setAttribute('aria-expanded', 'false');
+        }),
+      );
+    </script>
   </body>
 </html>

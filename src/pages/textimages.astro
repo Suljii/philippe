@@ -1,6 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { sanityClient, urlFor } from "../lib/sanity";
+import { sanityClient, imgSrc, imgSrcSet } from "../lib/sanity";
+
+const COVER_WIDTHS = [200, 400, 600];
+const COVER_SIZES = "200px";
 
 const textimages = await sanityClient.fetch(`
   *[_type == "galerie" && defined(pdf.asset)] | order(ordre asc) {
@@ -8,7 +11,8 @@ const textimages = await sanityClient.fetch(`
     "slug": slug.current,
     intro,
     "pdfUrl": pdf.asset->url,
-    "couverture": coalesce(images[0].miniature, images[0].image)
+    "couverture": coalesce(images[0].image, images[0].miniature),
+    "lqip": coalesce(images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
   }
 `);
 ---
@@ -35,6 +39,14 @@ const textimages = await sanityClient.fetch(`
       grid-template-columns: 200px 1fr;
       gap: 2rem;
       align-items: start;
+    }
+
+    @media (max-width: 600px) {
+      .textimage {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        max-width: 320px;
+      }
     }
 
     .textimage img {
@@ -93,8 +105,13 @@ const textimages = await sanityClient.fetch(`
         <div class="textimage">
           {textimage.couverture && (
             <img
-              src={urlFor(textimage.couverture).width(600).format('webp').quality(90).url()}
+              src={imgSrc(textimage.couverture, 400)}
+              srcset={imgSrcSet(textimage.couverture, COVER_WIDTHS)}
+              sizes={COVER_SIZES}
               alt={textimage.titre}
+              loading="lazy"
+              decoding="async"
+              style={textimage.lqip ? `background-image:url(${textimage.lqip});background-size:cover;background-position:center` : undefined}
             />
           )}
           <div class="textimage-info">
