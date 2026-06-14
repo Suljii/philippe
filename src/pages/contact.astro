@@ -1,0 +1,168 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Contact">
+  <style>
+    .contact-wrapper {
+      max-width: 520px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 2.5rem;
+    }
+
+    .intro {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #2a2a2a;
+      padding: 0.75rem 1rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: #d0d0d0;
+      background: #222;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      border-radius: 0;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #555;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    button {
+      background: transparent;
+      color: #888;
+      border: 1px solid #333;
+      padding: 0.8rem 2.5rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    button:hover {
+      color: #d0d0d0;
+      border-color: #666;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    .message.success { color: #7a9e7e; }
+    .message.error   { color: #9e7a7a; }
+  </style>
+
+  <div class="contact-wrapper">
+    <p class="section-label">Contact</p>
+
+    <p class="intro">
+      <!-- Remplace par le vrai texte d'intro de Philippe -->
+      Pour toute demande, n'hésitez pas à écrire.
+    </p>
+
+    <form id="contact-form">
+      <div class="form-group">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Envoyer</button>
+
+      <p id="form-message" class="message" style="display:none"></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement
+    const msg = document.getElementById('form-message') as HTMLParagraphElement
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      btn.disabled = true
+      btn.textContent = 'Envoi...'
+      msg.style.display = 'none'
+
+      const formData = new FormData(form)
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          body: formData,
+        })
+
+        const json = await res.json()
+
+        if (res.ok) {
+          form.reset()
+          msg.textContent = 'Message envoyé. Merci !'
+          msg.className = 'message success'
+        } else {
+          msg.textContent = json.error || 'Une erreur est survenue.'
+          msg.className = 'message error'
+        }
+      } catch {
+        msg.textContent = 'Une erreur est survenue.'
+        msg.className = 'message error'
+      }
+
+      msg.style.display = 'block'
+      btn.disabled = false
+      btn.textContent = 'Envoyer'
+    })
+  </script>
+</Layout>

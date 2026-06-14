@@ -1,0 +1,217 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+const galerie = await sanityClient.fetch(
+  `
+  *[_type == "galerie" && slug.current == $slug][0] {
+    titreHomepage,
+    titrePage,
+    nom,
+    intro,
+    texte,
+    "pdfUrl": pdf.asset->url,
+    "sousGaleries": *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc) {
+      titreHomepage,
+      nom,
+      "slug": slug.current,
+      "couverture": coalesce(images[0].miniature, images[0].image)
+    },
+    images[] {
+      titre,
+      image,
+      miniature
+    }
+  }
+`,
+  { slug },
+);
+
+if (!galerie) return Astro.redirect("/404");
+
+const estCategorie = (galerie.sousGaleries?.length ?? 0) > 0;
+const titre = galerie.titrePage || galerie.nom || galerie.titreHomepage;
+const aTexte = !!galerie.texte;
+---
+
+<Layout title={titre}>
+  <style>
+    .retour {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.72rem;
+      color: #555;
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .retour:hover { color: #d0d0d0; }
+
+    .galerie-header { margin-bottom: 3rem; }
+
+    h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #d0d0d0;
+      margin-bottom: 0.75rem;
+    }
+
+    .intro {
+      font-size: 0.9rem;
+      color: #888;
+      line-height: 1.7;
+      max-width: 600px;
+      font-weight: 300;
+      margin-bottom: 0.75rem;
+      white-space: pre-line;
+    }
+
+    .pdf-link {
+      display: inline-block;
+      font-size: 0.78rem;
+      color: #888;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .pdf-link:hover { color: #d0d0d0; }
+
+    /* Mise en page avec texte de gauche */
+    .layout-texte {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .texte-gauche {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: #999;
+      font-weight: 300;
+      white-space: pre-line;
+      position: sticky;
+      top: calc(var(--nav-height) + 2rem);
+    }
+    @media (max-width: 800px) {
+      .layout-texte { grid-template-columns: 1fr; gap: 2rem; }
+      .texte-gauche { position: static; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    figure { margin: 0; }
+    figure a { display: block; }
+    figure img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 3/2;
+      object-fit: cover;
+      filter: brightness(0.9);
+      transition: opacity 0.3s;
+    }
+    figure:hover img { opacity: 0.8; }
+
+    figcaption {
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+      color: #777;
+      letter-spacing: 0.05em;
+      font-weight: 300;
+    }
+
+    /* Cartes de sous-galeries (vue catégorie) */
+    .card { text-decoration: none; color: inherit; display: block; }
+    .card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85);
+      transition: opacity 0.4s;
+    }
+    .card:hover img { opacity: 0.65; }
+    .card-info { padding: 0.6rem 0; }
+    .card-info h2 {
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+  </style>
+
+  <a href="/galeries" class="retour">← Galeries</a>
+
+  <div class="galerie-header">
+    <h1>{titre}</h1>
+    {/* La description n'apparaît que sur la page de la galerie elle-même */}
+    {galerie.intro && <p class="intro">{galerie.intro}</p>}
+    {galerie.pdfUrl && (
+      <a href={galerie.pdfUrl} target="_blank" class="pdf-link">
+        Télécharger le textimage PDF →
+      </a>
+    )}
+  </div>
+
+  {estCategorie ? (
+    <div class="grid">
+      {galerie.sousGaleries.map((sg: any) => (
+        <a href={`/galeries/${sg.slug}`} class="card">
+          {sg.couverture && (
+            <img
+              src={urlFor(sg.couverture).width(600).format('webp').quality(80).url()}
+              alt={sg.nom || sg.titreHomepage}
+            />
+          )}
+          <div class="card-info">
+            <h2>{sg.nom || sg.titreHomepage}</h2>
+          </div>
+        </a>
+      ))}
+    </div>
+  ) : aTexte ? (
+    <div class="layout-texte">
+      <aside class="texte-gauche">{galerie.texte}</aside>
+      <div class="grid">
+        {galerie.images?.map((item: any) => (
+          <figure>
+            <a href={urlFor(item.image).width(2000).format('webp').quality(90).url()} target="_blank">
+              <img
+                src={urlFor(item.miniature || item.image).width(900).format('webp').quality(80).url()}
+                alt={item.titre || titre}
+              />
+            </a>
+            {item.titre && <figcaption>{item.titre}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div class="grid">
+      {galerie.images?.map((item: any) => (
+        <figure>
+          <a href={urlFor(item.image).width(2000).format('webp').quality(90).url()} target="_blank">
+            <img
+              src={urlFor(item.miniature || item.image).width(900).format('webp').quality(80).url()}
+              alt={item.titre || titre}
+            />
+          </a>
+          {item.titre && <figcaption>{item.titre}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  )}
+</Layout>

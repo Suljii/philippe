@@ -1,0 +1,97 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { sanityClient, urlFor } from "../../lib/sanity";
+
+// Galeries de premier niveau uniquement (catégories + galeries simples).
+// Les sous-galeries (ex. les golfs) n'apparaissent PAS ici.
+const galeries = await sanityClient.fetch(`
+  *[_type == "galerie" && !defined(parent)] | order(ordre asc) {
+    titreHomepage,
+    "slug": slug.current,
+    "couverture": coalesce(
+      images[0].miniature,
+      images[0].image,
+      *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc)[0].images[0].miniature,
+      *[_type == "galerie" && parent._ref == ^._id] | order(ordre asc)[0].images[0].image
+    )
+  }
+`);
+---
+
+<Layout title="Galeries">
+  <style>
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 2.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85);
+      transition: opacity 0.4s;
+    }
+
+    .card:hover img {
+      opacity: 0.65;
+    }
+
+    .card-info {
+      padding: 0.6rem 0;
+    }
+
+    .card-info h2 {
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+
+    .vide {
+      color: #444;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+  </style>
+
+  <p class="section-label">Galeries</p>
+
+  {galeries.length === 0 ? (
+    <p class="vide">Aucune galerie disponible.</p>
+  ) : (
+    <div class="grid">
+      {galeries.map((galerie: any) => (
+        <a href={`/galeries/${galerie.slug}`} class="card">
+          {galerie.couverture && (
+            <img
+              src={urlFor(galerie.couverture).width(600).format('webp').quality(80).url()}
+              alt={galerie.titreHomepage}
+            />
+          )}
+          <div class="card-info">
+            <h2>{galerie.titreHomepage}</h2>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+</Layout>

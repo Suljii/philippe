@@ -1,0 +1,118 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { sanityClient, urlFor } from "../lib/sanity";
+
+const textimages = await sanityClient.fetch(`
+  *[_type == "galerie" && defined(pdf.asset)] | order(ordre asc) {
+    "titre": titreHomepage,
+    "slug": slug.current,
+    intro,
+    "pdfUrl": pdf.asset->url,
+    "couverture": coalesce(images[0].miniature, images[0].image)
+  }
+`);
+---
+
+<Layout title="Textimages">
+  <style>
+    h1 {
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 3rem;
+    }
+
+    .liste {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .textimage {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .textimage img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 2/3;
+      object-fit: cover;
+    }
+
+    .textimage-info h2 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .textimage-info p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .liens {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .lien-galerie {
+      font-size: 0.85rem;
+      color: #aaa;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .lien-pdf {
+      font-size: 0.85rem;
+      color: #888;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .vide {
+      color: #888;
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <h1>Textimages</h1>
+
+  {textimages.length === 0 ? (
+    <p class="vide">Aucun textimage disponible pour le moment.</p>
+  ) : (
+    <div class="liste">
+      {textimages.map((textimage: any) => (
+        <div class="textimage">
+          {textimage.couverture && (
+            <img
+              src={urlFor(textimage.couverture).width(400).format('webp').quality(80).url()}
+              alt={textimage.titre}
+            />
+          )}
+          <div class="textimage-info">
+            <h2>{textimage.titre}</h2>
+            {textimage.intro && <p>{textimage.intro}</p>}
+            <div class="liens">
+              <a href={`/galeries/${textimage.slug}`} class="lien-galerie">
+                Voir la galerie →
+              </a>
+              {textimage.pdfUrl && (
+                <a href={textimage.pdfUrl} target="_blank" class="lien-pdf">
+                  Télécharger le PDF
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</Layout>

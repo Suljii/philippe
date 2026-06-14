@@ -1,0 +1,84 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Bio">
+  <style>
+    .bio {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .bio img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+    }
+
+    .bio-texte h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .bio-texte p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .bio {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+  </style>
+
+  <div class="bio">
+    <!-- Remplace par ta vraie photo -->
+    <img
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_bwJUgq4Ek-NWae3IyOhItt2ijUOBrqXUGw&s"
+      alt="Nom du Photographe"
+    />
+
+    <div class="bio-texte">
+      <h1>Philippe Muraro</h1>
+
+      <p>
+        Je suis parti voir un rédacteur-en-chef d’un grand magazine
+        international pour lui proposer mes services photographiques. Un talent
+        comme le mien se serait dommage de s’en passer. Le en-chef en question
+        quand il a vu mon travail, m’a dit, m’a fiélé plutôt : – Vous !… Faire
+        des portraits d’artistes !… Ah ! Ah ! je rigole… Cinoche ! Les trois
+        coups ! Pinceaux ! Micros ! Stylos ! Ciseaux !… Rideau ! Mais mon pauvre
+        petit bonhomme qu’est-ce que vous voulez que je vous fasse faire, seriez
+        même pas foutu d’assurer la rubrique des chiens et chats écrasés ! Ah ça
+        mon salaud, je ne serai pas capable de faire les chiens et chats
+        écrasés… ? Je me suis donné un mois pour ce boulot. J’ai chopé le mois
+        de Juin 89 par la tignasse et je l’ai pas lâché, jusqu’au 30.
+      </p>
+      <p>
+        Cette introduction à un travail photo intitulé « Correspondance mortelle
+        » résume assez bien la situation. Fils de Bruno et Renée, né à Gourdon,
+        Lot, dans la deuxième moitié du XXè siècle avec de fortes probabilités
+        de mourir dans la première moitié du XXIè, mais où ?
+      </p>
+      <p>
+        Ils ont dit : Nicéphore Niepce : « Quand j’ai vu les photos de ce type,
+        je me suis dit que j’avais pas inventé le bouzingue pour rien. »
+        Baudelaire : « La seule excuse valable pour la photographie. » Henri
+        Cartier-Bresson* : « Il est né quand Capa a sauté sur une mine, était-ce
+        un signe ? Si c’est une réincarnation, elle a un peu foiré. » Helmut
+        Newton : « Ça manque un peu de nichons ». Le petit oiseau qui va sortir
+        : « Aïe ! Il a encore laissé le capuchon sur l’objectif. » Renée Muraro
+        : « Tu re-veux du Pschitt Orange ou je range la bouteille ? » * HCB y
+        connait que dalle
+      </p>
+    </div>
+  </div>
+</Layout>
