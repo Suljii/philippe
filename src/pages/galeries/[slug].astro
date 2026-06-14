@@ -172,7 +172,7 @@ const aTexte = !!galerie.texte;
         <a href={`/galeries/${sg.slug}`} class="card">
           {sg.couverture && (
             <img
-              src={urlFor(sg.couverture).width(600).format('webp').quality(80).url()}
+              src={urlFor(sg.couverture).width(900).format('webp').quality(90).url()}
               alt={sg.nom || sg.titreHomepage}
             />
           )}
@@ -188,9 +188,9 @@ const aTexte = !!galerie.texte;
       <div class="grid">
         {galerie.images?.map((item: any) => (
           <figure>
-            <a href={urlFor(item.image).width(2000).format('webp').quality(90).url()} target="_blank">
+            <a href={urlFor(item.image).width(2600).format('webp').quality(95).url()} target="_blank">
               <img
-                src={urlFor(item.miniature || item.image).width(900).format('webp').quality(80).url()}
+                src={urlFor(item.image).width(1300).format('webp').quality(90).url()}
                 alt={item.titre || titre}
               />
             </a>

@@ -83,7 +83,7 @@ const galeries = await sanityClient.fetch(`
         <a href={`/galeries/${galerie.slug}`} class="card">
           {galerie.couverture && (
             <img
-              src={urlFor(galerie.couverture).width(600).format('webp').quality(80).url()}
+              src={urlFor(galerie.couverture).width(900).format('webp').quality(90).url()}
               alt={galerie.titreHomepage}
             />
           )}
