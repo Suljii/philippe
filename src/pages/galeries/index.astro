@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
-const CARD_WIDTHS = [400, 600, 800, 1200];
-const CARD_SIZES = "(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 300px";
+const CARD_WIDTHS = [170, 340, 510];
+const CARD_SIZES = "170px";
 
 // Galeries de premier niveau uniquement (catégories + galeries simples).
 // Les sous-galeries (ex. les golfs) n'apparaissent PAS ici.
@@ -36,9 +36,12 @@ const galeries = await sanityClient.fetch(`
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, 170px);
       gap: 1.25rem;
     }
+
+    .card { width: 170px; }
+    .card img { width: 170px; height: 170px; }
 
     .card {
       text-decoration: none;
@@ -88,7 +91,7 @@ const galeries = await sanityClient.fetch(`
         <a href={`/galeries/${galerie.slug}`} class="card">
           {galerie.couverture && (
             <img
-              src={imgSrc(galerie.couverture, 800, { square: true })}
+              src={imgSrc(galerie.couverture, 340, { square: true })}
               srcset={imgSrcSet(galerie.couverture, CARD_WIDTHS, { square: true })}
               sizes={CARD_SIZES}
               alt={galerie.titreHomepage}

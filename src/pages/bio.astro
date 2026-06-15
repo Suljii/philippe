@@ -6,7 +6,7 @@ import Layout from "../layouts/Layout.astro";
   <style>
     .bio {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 1fr 300px;
       gap: 4rem;
       align-items: start;
     }
@@ -16,6 +16,11 @@ import Layout from "../layouts/Layout.astro";
       display: block;
       aspect-ratio: 3/4;
       object-fit: cover;
+      margin-top: 0.55rem;
+    }
+
+    @media (max-width: 700px) {
+      .bio img { margin-top: 0; }
     }
 
     .bio-texte h1 {
@@ -40,12 +45,6 @@ import Layout from "../layouts/Layout.astro";
   </style>
 
   <div class="bio">
-    <!-- Remplace par ta vraie photo -->
-    <img
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_bwJUgq4Ek-NWae3IyOhItt2ijUOBrqXUGw&s"
-      alt="Nom du Photographe"
-    />
-
     <div class="bio-texte">
       <h1>Philippe Muraro</h1>
 
@@ -69,16 +68,23 @@ import Layout from "../layouts/Layout.astro";
         de mourir dans la première moitié du XXIè, mais où ?
       </p>
       <p>
-        Ils ont dit : Nicéphore Niepce : « Quand j’ai vu les photos de ce type,
-        je me suis dit que j’avais pas inventé le bouzingue pour rien. »
-        Baudelaire : « La seule excuse valable pour la photographie. » Henri
-        Cartier-Bresson* : « Il est né quand Capa a sauté sur une mine, était-ce
-        un signe ? Si c’est une réincarnation, elle a un peu foiré. » Helmut
-        Newton : « Ça manque un peu de nichons ». Le petit oiseau qui va sortir
-        : « Aïe ! Il a encore laissé le capuchon sur l’objectif. » Renée Muraro
-        : « Tu re-veux du Pschitt Orange ou je range la bouteille ? » * HCB y
-        connait que dalle
+        Ils ont dit :<br /><br />
+        <b>Nicéphore Niepce :</b> « Quand j’ai vu les photos de ce type, je me suis
+        dit que j’avais pas inventé le bouzingue pour rien. »
+        <br />
+        <b>Baudelaire :</b> « La seule excuse valable pour la photographie. » <br
+        />
+        <b>Henri Cartier-Bresson* :</b> « Il est né quand Capa a sauté sur une mine,
+        était-ce un signe ? Si c’est une réincarnation, elle a un peu foiré. »
+        <br />
+        <b>Helmut Newton :</b> « Ça manque un peu de nichons ». <br /><b
+          >Le petit oiseau qui va sortir :</b
+        > « Aïe ! Il a encore laissé le capuchon sur l’objectif. » <br /><b
+          >Renée Muraro :</b
+        > « Tu re-veux du Pschitt Orange ou je range la bouteille ? » <br /><br
+        />* HCB y connait que dalle
       </p>
     </div>
+    <img src="/flipoparpao.jpg" alt="Philippe Muraro" />
   </div>
 </Layout>

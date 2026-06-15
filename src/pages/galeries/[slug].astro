@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
-const CARD_WIDTHS = [400, 600, 800, 1200];
-const CARD_SIZES = "(max-width: 600px) 90vw, (max-width: 1000px) 45vw, 300px";
+const CARD_WIDTHS = [170, 340, 510];
+const CARD_SIZES = "170px";
 const FULL_WIDTHS = [1000, 1600, 2000, 2600, 3200];
 const FULL_SIZES = "92vw";
 
@@ -114,21 +114,22 @@ const aTexte = !!galerie.texte;
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, 170px);
       gap: 1.25rem;
     }
 
-    figure { margin: 0; }
+    .grid figure { margin: 0; width: 170px; }
     .photo {
       display: block;
-      width: 100%;
+      width: 170px;
+      height: 170px;
       padding: 0;
       border: 0;
       background: none;
       cursor: zoom-in;
       overflow: hidden;
     }
-    figure img {
+    .grid figure img {
       width: 100%;
       display: block;
       aspect-ratio: 1/1;
@@ -147,10 +148,10 @@ const aTexte = !!galerie.texte;
     }
 
     /* Cartes de sous-galeries (vue catégorie) */
-    .card { text-decoration: none; color: inherit; display: block; }
+    .card { text-decoration: none; color: inherit; display: block; width: 170px; }
     .card img {
-      width: 100%;
-      aspect-ratio: 1/1;
+      width: 170px;
+      height: 170px;
       object-fit: cover;
       display: block;
       filter: brightness(0.85);
@@ -174,7 +175,7 @@ const aTexte = !!galerie.texte;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(10, 10, 10, 0.95);
+      background: rgba(10, 10, 10, 0.75);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease;
@@ -260,7 +261,7 @@ const aTexte = !!galerie.texte;
         <a href={`/galeries/${sg.slug}`} class="card">
           {sg.couverture && (
             <img
-              src={imgSrc(sg.couverture, 800, { square: true })}
+              src={imgSrc(sg.couverture, 340, { square: true })}
               srcset={imgSrcSet(sg.couverture, CARD_WIDTHS, { square: true })}
               sizes={CARD_SIZES}
               alt={sg.nom || sg.titreHomepage}
@@ -290,7 +291,7 @@ const aTexte = !!galerie.texte;
               data-caption={item.titre || ''}
             >
               <img
-                src={imgSrc(item.image, 800, { square: true })}
+                src={imgSrc(item.image, 340, { square: true })}
                 srcset={imgSrcSet(item.image, CARD_WIDTHS, { square: true })}
                 sizes={CARD_SIZES}
                 alt={item.titre || titre}
@@ -317,7 +318,7 @@ const aTexte = !!galerie.texte;
             data-caption={item.titre || ''}
           >
             <img
-              src={imgSrc(item.image, 800, { square: true })}
+              src={imgSrc(item.image, 340, { square: true })}
               srcset={imgSrcSet(item.image, CARD_WIDTHS, { square: true })}
               sizes={CARD_SIZES}
               alt={item.titre || titre}

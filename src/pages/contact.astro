@@ -73,7 +73,9 @@ import Layout from "../layouts/Layout.astro";
       letter-spacing: 0.14em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
+      transition:
+        color 0.2s,
+        border-color 0.2s;
     }
 
     button:hover {
@@ -92,8 +94,12 @@ import Layout from "../layouts/Layout.astro";
       letter-spacing: 0.05em;
     }
 
-    .message.success { color: #7a9e7e; }
-    .message.error   { color: #9e7a7a; }
+    .message.success {
+      color: #7a9e7e;
+    }
+    .message.error {
+      color: #9e7a7a;
+    }
 
     /* Honeypot : retiré du flux et masqué aux humains (les bots le voient) */
     .hp-field {
@@ -108,10 +114,7 @@ import Layout from "../layouts/Layout.astro";
   <div class="contact-wrapper">
     <p class="section-label">Contact</p>
 
-    <p class="intro">
-      <!-- Remplace par le vrai texte d'intro de Philippe -->
-      Pour toute demande, n'hésitez pas à écrire.
-    </p>
+    <p class="intro">Pour toute demande, n'hésitez pas à m'écrire.</p>
 
     <form id="contact-form">
       <div class="form-group">
@@ -132,7 +135,13 @@ import Layout from "../layouts/Layout.astro";
       {/* Anti-spam : champ piège (honeypot) — invisible pour les humains */}
       <div class="hp-field" aria-hidden="true">
         <label for="website">Ne pas remplir ce champ</label>
-        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+        <input
+          type="text"
+          id="website"
+          name="website"
+          tabindex="-1"
+          autocomplete="off"
+        />
       </div>
       {/* Anti-spam : horodatage de chargement, rempli par JS */}
       <input type="hidden" name="ts" id="ts" />
@@ -144,46 +153,46 @@ import Layout from "../layouts/Layout.astro";
   </div>
 
   <script>
-    const form = document.getElementById('contact-form') as HTMLFormElement
-    const btn = document.getElementById('submit-btn') as HTMLButtonElement
-    const msg = document.getElementById('form-message') as HTMLParagraphElement
-    const ts = document.getElementById('ts') as HTMLInputElement
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    const btn = document.getElementById("submit-btn") as HTMLButtonElement;
+    const msg = document.getElementById("form-message") as HTMLParagraphElement;
+    const ts = document.getElementById("ts") as HTMLInputElement;
 
     // Anti-spam : enregistre l'instant où la page est prête (piège temporel)
-    ts.value = String(Date.now())
+    ts.value = String(Date.now());
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-      btn.disabled = true
-      btn.textContent = 'Envoi...'
-      msg.style.display = 'none'
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = "Envoi...";
+      msg.style.display = "none";
 
-      const formData = new FormData(form)
+      const formData = new FormData(form);
 
       try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
+        const res = await fetch("/api/contact", {
+          method: "POST",
           body: formData,
-        })
+        });
 
-        const json = await res.json()
+        const json = await res.json();
 
         if (res.ok) {
-          form.reset()
-          msg.textContent = 'Message envoyé. Merci !'
-          msg.className = 'message success'
+          form.reset();
+          msg.textContent = "Message envoyé. Merci !";
+          msg.className = "message success";
         } else {
-          msg.textContent = json.error || 'Une erreur est survenue.'
-          msg.className = 'message error'
+          msg.textContent = json.error || "Une erreur est survenue.";
+          msg.className = "message error";
         }
       } catch {
-        msg.textContent = 'Une erreur est survenue.'
-        msg.className = 'message error'
+        msg.textContent = "Une erreur est survenue.";
+        msg.className = "message error";
       }
 
-      msg.style.display = 'block'
-      btn.disabled = false
-      btn.textContent = 'Envoyer'
-    })
+      msg.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Envoyer";
+    });
   </script>
 </Layout>
