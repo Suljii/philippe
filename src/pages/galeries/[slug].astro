@@ -62,34 +62,48 @@ const aTexte = !!galerie.texte;
 
     h1 {
       font-family: 'Oswald', sans-serif;
-      font-size: 1.4rem;
+      font-size: 2rem;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #d0d0d0;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.9rem;
     }
 
     .intro {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #888;
-      line-height: 1.7;
-      max-width: 600px;
+      line-height: 1.75;
+      max-width: 640px;
       font-weight: 300;
       margin-bottom: 0.75rem;
       white-space: pre-line;
     }
 
-    .pdf-link {
-      display: inline-block;
-      font-size: 0.78rem;
-      color: #888;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      letter-spacing: 0.08em;
-      transition: color 0.2s;
+    .pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.35rem 0 1.25rem;
+      padding: 0.65rem 1.4rem;
+      border: 1px solid #3a3a3a;
+      color: #aaa;
+      background: transparent;
+      text-decoration: none;
+      font-size: 0.76rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
     }
-    .pdf-link:hover { color: #d0d0d0; }
+    .pdf-btn:hover {
+      color: #e8e8e8;
+      border-color: #777;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .pdf-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
 
     /* Mise en page avec texte de gauche */
     .layout-texte {
@@ -99,8 +113,8 @@ const aTexte = !!galerie.texte;
       align-items: start;
     }
     .texte-gauche {
-      font-size: 0.85rem;
-      line-height: 1.75;
+      font-size: 0.95rem;
+      line-height: 1.8;
       color: #999;
       font-weight: 300;
       white-space: pre-line;
@@ -141,7 +155,7 @@ const aTexte = !!galerie.texte;
 
     figcaption {
       margin-top: 0.4rem;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #777;
       letter-spacing: 0.05em;
       font-weight: 300;
@@ -246,13 +260,14 @@ const aTexte = !!galerie.texte;
 
   <div class="galerie-header">
     <h1>{titre}</h1>
-    {/* La description n'apparaît que sur la page de la galerie elle-même */}
-    {galerie.intro && <p class="intro">{galerie.intro}</p>}
+    {/* Bouton PDF : entre le titre et le texte */}
     {galerie.pdfUrl && (
-      <a href={galerie.pdfUrl} target="_blank" class="pdf-link">
-        Télécharger le textimage PDF →
+      <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
+        <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
       </a>
     )}
+    {/* La description n'apparaît que sur la page de la galerie elle-même */}
+    {galerie.intro && <p class="intro">{galerie.intro}</p>}
   </div>
 
   {estCategorie ? (
