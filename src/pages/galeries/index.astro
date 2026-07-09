@@ -1,4 +1,4 @@
----
+﻿---
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
@@ -26,7 +26,7 @@ const galeries = await sanityClient.fetch(`
 <Layout title="Galeries">
   <style>
     .section-label {
-      font-family: 'Oswald', sans-serif;
+      font-family: var(--font-display);
       font-size: 2rem;
       font-weight: 600;
       letter-spacing: 0.08em;

@@ -1,4 +1,4 @@
----
+﻿---
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
@@ -61,7 +61,7 @@ const aTexte = !!galerie.texte;
     .galerie-header { margin-bottom: 3rem; }
 
     h1 {
-      font-family: 'Oswald', sans-serif;
+      font-family: var(--font-display);
       font-size: 2rem;
       font-weight: 600;
       letter-spacing: 0.08em;
@@ -71,11 +71,12 @@ const aTexte = !!galerie.texte;
     }
 
     .intro {
-      font-size: 1rem;
-      color: #888;
-      line-height: 1.75;
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      color: #999;
+      line-height: 1.7;
       max-width: 640px;
-      font-weight: 300;
+      font-weight: 400;
       margin-bottom: 0.75rem;
       white-space: pre-line;
     }
@@ -113,10 +114,11 @@ const aTexte = !!galerie.texte;
       align-items: start;
     }
     .texte-gauche {
-      font-size: 0.95rem;
-      line-height: 1.8;
-      color: #999;
-      font-weight: 300;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: #a0a0a0;
+      font-weight: 400;
       white-space: pre-line;
       position: sticky;
       top: calc(var(--nav-height) + 2rem);
