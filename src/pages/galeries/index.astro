@@ -64,7 +64,7 @@ const galeries = await sanityClient.fetch(`
     }
 
     .card-info {
-      padding: 0.2rem 0 0;
+      padding: 0;
     }
 
     .card-info h2 {
@@ -74,7 +74,11 @@ const galeries = await sanityClient.fetch(`
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--color-subtitle);
-      line-height: 1.25;
+      /* line-height 1 supprime l'interligne au-dessus des capitales
+         (Bellota Text a de grandes hampes). Augmenter margin-top écarte
+         le titre de la vignette. */
+      line-height: 1;
+      margin-top: 0.3rem;
     }
 
     .vide {
