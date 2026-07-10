@@ -24,8 +24,11 @@ const galerie = await sanityClient.fetch(
       titreHomepage,
       nom,
       "slug": slug.current,
-      "couverture": coalesce(images[0].image, images[0].miniature),
-      "lqip": coalesce(images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
+      images[] {
+        titre,
+        image,
+        "lqip": image.asset->metadata.lqip
+      }
     },
     images[] {
       titre,
@@ -58,7 +61,7 @@ const aTexte = !!galerie.texte;
     }
     .retour:hover { color: #d0d0d0; }
 
-    .galerie-header { margin-bottom: 3rem; }
+    .galerie-header { margin-bottom: 1.5rem; }
 
     h1 {
       font-family: var(--font-title);
@@ -163,19 +166,10 @@ const aTexte = !!galerie.texte;
       font-weight: 300;
     }
 
-    /* Cartes de sous-galeries (vue catégorie) */
-    .card { text-decoration: none; color: inherit; display: block; width: 170px; }
-    .card img {
-      width: 170px;
-      height: 170px;
-      object-fit: cover;
-      display: block;
-      filter: brightness(0.85);
-      transition: opacity 0.4s;
-    }
-    .card:hover img { opacity: 0.65; }
-    .card-info { padding: 0.6rem 0; }
-    .card-info h2 {
+    /* Vue catégorie : sections par sous-galerie */
+    .sous-galerie { margin-bottom: 3rem; }
+    .sous-galerie:last-child { margin-bottom: 0; }
+    .sous-titre {
       font-family: var(--font-title);
       font-size: 1.5rem;
       font-weight: 400;
@@ -183,6 +177,7 @@ const aTexte = !!galerie.texte;
       text-transform: uppercase;
       color: var(--color-subtitle);
       line-height: 1.25;
+      margin-bottom: 0.9rem;
     }
 
     /* ── Lightbox ── */
@@ -275,24 +270,37 @@ const aTexte = !!galerie.texte;
   </div>
 
   {estCategorie ? (
-    <div class="grid">
+    /* Catégorie : toutes les photos des sous-galeries, regroupées sous un intertitre */
+    <div class="sections">
       {galerie.sousGaleries.map((sg: any) => (
-        <a href={`/galeries/${sg.slug}`} class="card">
-          {sg.couverture && (
-            <img
-              src={imgSrc(sg.couverture, 340, { square: true })}
-              srcset={imgSrcSet(sg.couverture, CARD_WIDTHS, { square: true })}
-              sizes={CARD_SIZES}
-              alt={sg.nom || sg.titreHomepage}
-              loading="lazy"
-              decoding="async"
-              style={sg.lqip ? `background-image:url(${sg.lqip});background-size:cover;background-position:center` : undefined}
-            />
-          )}
-          <div class="card-info">
-            <h2>{sg.nom || sg.titreHomepage}</h2>
+        <section class="sous-galerie">
+          <h2 class="sous-titre">{sg.nom || sg.titreHomepage}</h2>
+          <div class="grid">
+            {sg.images?.map((item: any) => (
+              <figure>
+                <button
+                  type="button"
+                  class="photo"
+                  data-full={imgSrc(item.image, 2000)}
+                  data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
+                  data-sizes={FULL_SIZES}
+                  data-caption={item.titre || ''}
+                >
+                  <img
+                    src={imgSrc(item.image, 340, { square: true })}
+                    srcset={imgSrcSet(item.image, CARD_WIDTHS, { square: true })}
+                    sizes={CARD_SIZES}
+                    alt={item.titre || sg.nom || sg.titreHomepage}
+                    loading="lazy"
+                    decoding="async"
+                    style={item.lqip ? `background-image:url(${item.lqip});background-size:cover;background-position:center` : undefined}
+                  />
+                </button>
+                {item.titre && <figcaption>{item.titre}</figcaption>}
+              </figure>
+            ))}
           </div>
-        </a>
+        </section>
       ))}
     </div>
   ) : aTexte ? (
