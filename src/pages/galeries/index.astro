@@ -26,12 +26,12 @@ const galeries = await sanityClient.fetch(`
 <Layout title="Galeries">
   <style>
     .section-label {
-      font-family: var(--font-display);
+      font-family: var(--font-title);
       font-size: 2rem;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #d0d0d0;
+      color: var(--color-title);
       margin-bottom: 2.25rem;
     }
 
@@ -68,11 +68,13 @@ const galeries = await sanityClient.fetch(`
     }
 
     .card-info h2 {
-      font-size: 0.82rem;
+      font-family: var(--font-title);
+      font-size: 1.5rem;
       font-weight: 400;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: #aaa;
+      color: var(--color-subtitle);
+      line-height: 1.25;
     }
 
     .vide {
