@@ -45,9 +45,6 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         --nav-height: 90px;
         --max-width: 1200px;
         --h-padding: 6rem;
-        /* Retrait supplémentaire du header (logo + nav) par rapport au contenu.
-           Augmenter = header plus resserré. */
-        --header-inset: 30px;
       }
 
       html, body {
@@ -68,16 +65,23 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
       /* ── HEADER ── */
       header {
         height: var(--nav-height);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 calc(var(--h-padding) + var(--header-inset));
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 100;
         background: linear-gradient(to bottom, rgba(26,26,26,0.98) 60%, transparent 100%);
+      }
+
+      /* Le contenu du header s'aligne sur la colonne de contenu du site */
+      .header-inner {
+        height: 100%;
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--h-padding);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .logo {
@@ -212,8 +216,6 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         :root {
           --h-padding: 1.25rem;
           --nav-height: 70px;
-          /* Pas de retrait sur mobile : la place est déjà comptée */
-          --header-inset: 0px;
         }
 
         .logo .name { font-size: 1.4rem; }
@@ -258,6 +260,7 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
   </head>
   <body class={fullscreen ? 'is-fullscreen' : ''}>
     <header>
+      <div class="header-inner">
       <a href="/" class="logo">
         <span class="name">Philippe Muraro</span>
         <span class="subtitle">Photographe</span>
@@ -276,6 +279,7 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         <span class="sep">|</span>
         <a href="/contact" class={currentPath === '/contact' ? 'active' : ''}>Contact</a>
       </nav>
+      </div>
     </header>
 
     <main class={fullscreen ? 'fullscreen' : 'standard'}>
