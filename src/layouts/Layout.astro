@@ -43,7 +43,9 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         /* Textes longs : poème, bio, introductions */
         --font-serif: 'EB Garamond', Georgia, serif;
         --nav-height: 90px;
-        --max-width: 1200px;
+        /* 1360 − 2×96 (h-padding) = 1168px utiles → 6 vignettes de 170px
+           (6×170 + 5×20 de gouttière = 1120px) tiennent sur une ligne. */
+        --max-width: 1360px;
         --h-padding: 6rem;
       }
 
