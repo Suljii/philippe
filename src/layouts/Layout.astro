@@ -17,7 +17,7 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
     <title>{title} — Philippe Muraro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Bellota+Text:wght@400;700&family=Inter:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:wght@300&family=Bellota+Text:wght@300;400;700&family=Inter:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
     <style>
       *, *::before, *::after {
         box-sizing: border-box;
@@ -30,12 +30,14 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         --color-text: #d0d0d0;
         --color-muted: #777;
         --color-border: #333;
-        /* Logo */
-        --font-display: 'Oswald', sans-serif;
-        /* Titres de page et titres de cartes */
+        /* Logo « Philippe Muraro » */
+        --font-display: 'Sofia Sans Extra Condensed', sans-serif;
+        /* Titres de page et sous-titres */
         --font-title: 'Bellota Text', sans-serif;
-        --color-title: #bebebe;
-        --color-subtitle: #dcdcdc;
+        --color-title: #797979;
+        --color-subtitle: #969696;
+        --size-title: 36px;
+        --size-subtitle: 16px;
         /* Interface : nav, boutons, légendes, formulaire */
         --font-body: 'Inter', system-ui, sans-serif;
         /* Textes longs : poème, bio, introductions */
@@ -83,8 +85,8 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
       .logo .name {
         display: block;
         font-family: var(--font-display);
-        font-size: 1.95rem;
-        font-weight: 700;
+        font-size: 2.4rem;
+        font-weight: 300;
         letter-spacing: 0.06em;
         color: var(--color-text);
         text-transform: uppercase;
