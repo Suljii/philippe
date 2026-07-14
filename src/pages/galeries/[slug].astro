@@ -16,6 +16,7 @@ const galerie = await sanityClient.fetch(
   *[_type == "galerie" && slug.current == $slug][0] {
     titreHomepage,
     titrePage,
+    sousTitre,
     nom,
     intro,
     texte,
@@ -71,6 +72,16 @@ const aTexte = !!galerie.texte;
       text-transform: uppercase;
       color: var(--color-title);
       margin-bottom: 0.9rem;
+    }
+
+    .sous-titre-page {
+      font-family: var(--font-title);
+      font-size: 1.35rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--color-subtitle);
+      line-height: 1.2;
+      margin: -0.3rem 0 0.9rem;
     }
 
     .intro {
@@ -259,6 +270,7 @@ const aTexte = !!galerie.texte;
 
   <div class="galerie-header">
     <h1>{titre}</h1>
+    {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
     {/* Bouton PDF : entre le titre et le texte */}
     {galerie.pdfUrl && (
       <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">

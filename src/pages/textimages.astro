@@ -7,7 +7,8 @@ const COVER_SIZES = "200px";
 
 const textimages = await sanityClient.fetch(`
   *[_type == "galerie" && defined(pdf.asset)] | order(ordre asc) {
-    "titre": titreHomepage,
+    "titre": coalesce(titreTextimage, titrePage, titreHomepage),
+    sousTitre,
     "slug": slug.current,
     intro,
     "pdfUrl": pdf.asset->url,
@@ -58,9 +59,22 @@ const textimages = await sanityClient.fetch(`
     }
 
     .textimage-info h2 {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--color-title);
+      line-height: 1.15;
+      margin-bottom: 0.25rem;
+    }
+
+    .textimage-info .sous-titre {
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--color-subtitle);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
     }
 
     .textimage-info p {
@@ -118,6 +132,7 @@ const textimages = await sanityClient.fetch(`
           )}
           <div class="textimage-info">
             <h2>{textimage.titre}</h2>
+            {textimage.sousTitre && <p class="sous-titre">{textimage.sousTitre}</p>}
             {textimage.intro && <p>{textimage.intro}</p>}
             <div class="liens">
               <a href={`/galeries/${textimage.slug}`} class="lien-galerie">
