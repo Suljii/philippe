@@ -45,6 +45,9 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         --nav-height: 90px;
         --max-width: 1200px;
         --h-padding: 6rem;
+        /* Retrait supplémentaire du header (logo + nav) par rapport au contenu.
+           Augmenter = header plus resserré. */
+        --header-inset: 30px;
       }
 
       html, body {
@@ -68,7 +71,7 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 var(--h-padding);
+        padding: 0 calc(var(--h-padding) + var(--header-inset));
         position: fixed;
         top: 0;
         left: 0;
@@ -209,6 +212,8 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         :root {
           --h-padding: 1.25rem;
           --nav-height: 70px;
+          /* Pas de retrait sur mobile : la place est déjà comptée */
+          --header-inset: 0px;
         }
 
         .logo .name { font-size: 1.4rem; }
