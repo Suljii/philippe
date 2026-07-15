@@ -41,6 +41,11 @@ const galeries = await sanityClient.fetch(`
       gap: 1.25rem;
     }
 
+    /* Sur mobile, les vignettes sont centrées horizontalement */
+    @media (max-width: 768px) {
+      .grid { justify-content: center; }
+    }
+
     .card { width: 170px; }
     .card img { width: 170px; height: 170px; }
 
@@ -74,6 +79,7 @@ const galeries = await sanityClient.fetch(`
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--color-subtitle);
+      text-align: center;
       /* line-height 1 supprime l'interligne au-dessus des capitales
          (Bellota Text a de grandes hampes). Augmenter margin-top écarte
          le titre de la vignette. */

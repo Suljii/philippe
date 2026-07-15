@@ -86,8 +86,8 @@ const aTexte = !!galerie.texte;
 
     .intro {
       font-family: var(--font-serif);
-      font-size: 1.2rem;
-      color: #999;
+      font-size: 16px;
+      color: #969696;
       line-height: 1.7;
       max-width: 640px;
       font-weight: 400;
@@ -148,6 +148,11 @@ const aTexte = !!galerie.texte;
       gap: 1.25rem;
     }
 
+    /* Sur mobile, les vignettes sont centrées horizontalement */
+    @media (max-width: 768px) {
+      .grid { justify-content: center; }
+    }
+
     .grid figure { margin: 0; width: 170px; }
     .photo {
       display: block;
@@ -175,6 +180,8 @@ const aTexte = !!galerie.texte;
       color: #777;
       letter-spacing: 0.05em;
       font-weight: 300;
+      text-align: center;
+      width: 170px;
     }
 
     /* Vue catégorie : sections par sous-galerie */
