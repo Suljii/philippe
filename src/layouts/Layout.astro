@@ -36,7 +36,7 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         --font-title: 'Bellota Text', sans-serif;
         --color-title: #797979;
         --color-subtitle: #969696;
-        --size-title: 36px;
+        --size-title: 48px;
         --size-subtitle: 16px;
         /* Interface : nav, boutons, légendes, formulaire */
         --font-body: 'Inter', system-ui, sans-serif;
@@ -211,6 +211,11 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         padding: 1rem 2rem;
         background: transparent;
         z-index: 100;
+      }
+
+      /* Paysage tablette / petits écrans : titres réduits */
+      @media (max-width: 1024px) {
+        :root { --size-title: 36px; }
       }
 
       /* ── MOBILE ── */
