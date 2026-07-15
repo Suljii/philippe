@@ -213,8 +213,8 @@ const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/g
         z-index: 100;
       }
 
-      /* Paysage tablette / petits écrans : titres réduits */
-      @media (max-width: 1024px) {
+      /* Sous 800px (portable / paysage tablette) : titres réduits */
+      @media (max-width: 800px) {
         :root { --size-title: 36px; }
       }
 
