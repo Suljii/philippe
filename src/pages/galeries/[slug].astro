@@ -74,6 +74,15 @@ const aTexte = !!galerie.texte;
       margin-bottom: 0.9rem;
     }
 
+    /* Sous-titre à gauche, bouton PDF aligné sur le bord droit du contenu */
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: -0.3rem 0 2.5rem;
+    }
+
     .sous-titre-page {
       font-family: var(--font-title);
       font-size: 21px;
@@ -81,20 +90,7 @@ const aTexte = !!galerie.texte;
       letter-spacing: 0.05em;
       color: var(--color-subtitle);
       line-height: 1.2;
-      margin: -0.3rem 0 0.9rem;
-    }
-
-    /* Rangée du bouton PDF : même grille que les images, donc le bouton
-       (qui couvre toutes les colonnes) se cale pile sur la dernière vignette. */
-    .pdf-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 170px);
-      gap: 1.25rem;
-      margin-bottom: 1.5rem;
-    }
-    .pdf-row .pdf-btn {
-      grid-column: 1 / -1;
-      justify-self: end;
+      margin: 0;
     }
 
     .intro {
@@ -113,6 +109,7 @@ const aTexte = !!galerie.texte;
       align-items: center;
       gap: 0.6rem;
       flex-shrink: 0;
+      margin-left: auto;
       padding: 0.65rem 1.4rem;
       border: 1px solid #3a3a3a;
       color: #aaa;
@@ -290,7 +287,17 @@ const aTexte = !!galerie.texte;
 
   <div class="galerie-header">
     <h1>{titre}</h1>
-    {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
+    {/* Sous-titre à gauche, bouton PDF aligné à droite, sur la même ligne */}
+    {(galerie.sousTitre || galerie.pdfUrl) && (
+      <div class="header-meta">
+        {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
+        {galerie.pdfUrl && (
+          <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
+            <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
+          </a>
+        )}
+      </div>
+    )}
     {/* La description n'apparaît que sur la page de la galerie elle-même */}
     {galerie.intro && <p class="intro">{galerie.intro}</p>}
   </div>
@@ -332,14 +339,6 @@ const aTexte = !!galerie.texte;
   ) : aTexte ? (
     <div class="layout-texte">
       <aside class="texte-gauche">{galerie.texte}</aside>
-      <div class="colonne-images">
-      {galerie.pdfUrl && (
-        <div class="pdf-row">
-          <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
-            <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
-          </a>
-        </div>
-      )}
       <div class="grid">
         {galerie.images?.map((item: any) => (
           <figure>
@@ -365,17 +364,8 @@ const aTexte = !!galerie.texte;
           </figure>
         ))}
       </div>
-      </div>
     </div>
   ) : (
-    <div class="colonne-images">
-    {galerie.pdfUrl && (
-      <div class="pdf-row">
-        <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
-          <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
-        </a>
-      </div>
-    )}
     <div class="grid">
       {galerie.images?.map((item: any) => (
         <figure>
@@ -400,7 +390,6 @@ const aTexte = !!galerie.texte;
           {item.titre && <figcaption>{item.titre}</figcaption>}
         </figure>
       ))}
-    </div>
     </div>
   )}
 
