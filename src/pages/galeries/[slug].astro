@@ -74,12 +74,11 @@ const aTexte = !!galerie.texte;
       margin-bottom: 0.9rem;
     }
 
-    /* Sous-titre + bouton PDF sur la même ligne.
-       gap = écart entre les deux ; augmenter pour éloigner le bouton. */
+    /* Sous-titre à gauche, bouton PDF aligné sur le bord droit du contenu */
     .header-meta {
       display: flex;
       align-items: center;
-      gap: 7rem;
+      gap: 2rem;
       flex-wrap: wrap;
       margin: -0.3rem 0 2.5rem;
     }
@@ -110,6 +109,7 @@ const aTexte = !!galerie.texte;
       align-items: center;
       gap: 0.6rem;
       flex-shrink: 0;
+      margin-left: auto;
       padding: 0.65rem 1.4rem;
       border: 1px solid #3a3a3a;
       color: #aaa;
