@@ -1,8 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// Image d'accueil fixe : déposer le fichier dans client/public/accueil.jpg
-const photoAccueil = "/accueil.jpg";
+// Slider d'accueil : ajouter/retirer des chemins ici (fichiers dans client/public/).
+// Pour l'instant la même photo 3 fois, en attendant les visuels définitifs.
+const slides = ["/accueil.jpg", "/accueil.jpg", "/accueil.jpg"];
+
+const INTERVALLE_MS = 5000; // durée d'affichage de chaque photo
 ---
 
 <Layout title="Accueil" fullscreen={true}>
@@ -28,30 +31,57 @@ const photoAccueil = "/accueil.jpg";
       width: 100%;
     }
 
-    .hero-frame a {
+    .slider {
+      position: relative;
       display: block;
       width: 100%;
       height: 100%;
     }
 
-    .hero-frame img {
+    .slide {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: block;
-      transition: opacity 0.3s ease;
+      opacity: 0;
+      transition: opacity 1.2s ease;
     }
 
-    .hero-frame a:hover img {
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slider:hover .slide.active {
       opacity: 0.85;
     }
   </style>
 
   <div class="hero">
     <div class="hero-frame">
-      <a href="/galeries" aria-label="Voir les galeries">
-        <img src={photoAccueil} alt="Philippe Muraro — Photographe" />
+      <a href="/galeries" aria-label="Voir les galeries" class="slider" id="slider">
+        {slides.map((src, i) => (
+          <img
+            src={src}
+            class={i === 0 ? "slide active" : "slide"}
+            alt="Philippe Muraro — Photographe"
+            decoding="async"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        ))}
       </a>
     </div>
   </div>
+
+  <script define:vars={{ INTERVALLE_MS }}>
+    const slides = document.querySelectorAll(".slide");
+    if (slides.length > 1) {
+      let index = 0;
+      setInterval(() => {
+        slides[index].classList.remove("active");
+        index = (index + 1) % slides.length;
+        slides[index].classList.add("active");
+      }, INTERVALLE_MS);
+    }
+  </script>
 </Layout>
