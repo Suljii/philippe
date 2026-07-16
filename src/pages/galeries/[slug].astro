@@ -74,14 +74,24 @@ const aTexte = !!galerie.texte;
       margin-bottom: 0.9rem;
     }
 
+    /* Sous-titre + bouton PDF sur la même ligne */
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin: -0.3rem 0 1.25rem;
+    }
+
     .sous-titre-page {
       font-family: var(--font-title);
-      font-size: var(--size-subtitle);
+      font-size: 18px;
       font-weight: 400;
       letter-spacing: 0.05em;
       color: var(--color-subtitle);
       line-height: 1.2;
-      margin: -0.3rem 0 0.9rem;
+      margin: 0;
     }
 
     .intro {
@@ -99,7 +109,7 @@ const aTexte = !!galerie.texte;
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
-      margin: 0.35rem 0 1.25rem;
+      flex-shrink: 0;
       padding: 0.65rem 1.4rem;
       border: 1px solid #3a3a3a;
       color: #aaa;
@@ -277,12 +287,16 @@ const aTexte = !!galerie.texte;
 
   <div class="galerie-header">
     <h1>{titre}</h1>
-    {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
-    {/* Bouton PDF : entre le titre et le texte */}
-    {galerie.pdfUrl && (
-      <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
-        <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
-      </a>
+    {/* Sous-titre à gauche, bouton PDF aligné à droite, sur la même ligne */}
+    {(galerie.sousTitre || galerie.pdfUrl) && (
+      <div class="header-meta">
+        {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
+        {galerie.pdfUrl && (
+          <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
+            <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
+          </a>
+        )}
+      </div>
     )}
     {/* La description n'apparaît que sur la page de la galerie elle-même */}
     {galerie.intro && <p class="intro">{galerie.intro}</p>}
