@@ -74,14 +74,17 @@ const aTexte = !!galerie.texte;
       margin-bottom: 0.9rem;
     }
 
-    /* Sous-titre à gauche, bouton PDF aligné sur le bord droit du contenu */
+    /* Texte à gauche, bouton PDF en face à droite, centrés verticalement */
     .header-meta {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 2rem;
       flex-wrap: wrap;
-      margin: -0.3rem 0 2.5rem;
+      margin: -0.3rem 0 0;
     }
+
+    .header-texte > *:last-child { margin-bottom: 0; }
 
     .sous-titre-page {
       font-family: var(--font-title);
@@ -90,7 +93,7 @@ const aTexte = !!galerie.texte;
       letter-spacing: 0.05em;
       color: var(--color-subtitle);
       line-height: 1.2;
-      margin: 0;
+      margin: 0 0 0.5rem;
     }
 
     .intro {
@@ -287,19 +290,19 @@ const aTexte = !!galerie.texte;
 
   <div class="galerie-header">
     <h1>{titre}</h1>
-    {/* Sous-titre à gauche, bouton PDF aligné à droite, sur la même ligne */}
-    {(galerie.sousTitre || galerie.pdfUrl) && (
-      <div class="header-meta">
+    {/* Texte à gauche (sous-titre + description), bouton PDF en face à droite */}
+    <div class="header-meta">
+      <div class="header-texte">
         {galerie.sousTitre && <p class="sous-titre-page">{galerie.sousTitre}</p>}
-        {galerie.pdfUrl && (
-          <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
-            <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
-          </a>
-        )}
+        {/* La description n'apparaît que sur la page de la galerie elle-même */}
+        {galerie.intro && <p class="intro">{galerie.intro}</p>}
       </div>
-    )}
-    {/* La description n'apparaît que sur la page de la galerie elle-même */}
-    {galerie.intro && <p class="intro">{galerie.intro}</p>}
+      {galerie.pdfUrl && (
+        <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
+          <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
+        </a>
+      )}
+    </div>
   </div>
 
   {estCategorie ? (
