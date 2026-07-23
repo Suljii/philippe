@@ -262,6 +262,32 @@ const aTexte = !!galerie.texte;
       min-height: 1em;
     }
 
+    /* Modale PDF */
+    .pdf-stage {
+      width: min(1100px, 92vw);
+      height: 88vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    #pdf-frame {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      background: #1a1a1a;
+      box-shadow: 0 10px 60px rgba(0, 0, 0, 0.6);
+    }
+    .pdf-dl {
+      align-self: center;
+      font-family: var(--font-title);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      color: #bbb;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .pdf-dl:hover { color: #fff; }
+
     .lb-close, .lb-nav {
       position: fixed;
       background: none;
@@ -306,7 +332,7 @@ const aTexte = !!galerie.texte;
         {galerie.intro && <p class="intro">{galerie.intro}</p>}
       </div>
       {galerie.pdfUrl && (
-        <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn">
+        <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn" id="pdf-open">
           <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
         </a>
       )}
@@ -415,6 +441,19 @@ const aTexte = !!galerie.texte;
     </figure>
   </div>
 
+  {/* ── Modale PDF (desktop uniquement) ── */}
+  {galerie.pdfUrl && (
+    <div id="pdf-modal" class="lightbox" aria-hidden="true">
+      <button class="lb-close" id="pdf-close" aria-label="Fermer">×</button>
+      <div class="pdf-stage">
+        <iframe id="pdf-frame" title="Textimage (PDF)" src=""></iframe>
+        <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-dl">
+          Ouvrir dans un nouvel onglet ↗
+        </a>
+      </div>
+    </div>
+  )}
+
   <script>
     const lb = document.getElementById('lightbox') as HTMLElement;
     const lbImg = document.getElementById('lb-img') as HTMLImageElement;
@@ -485,5 +524,40 @@ const aTexte = !!galerie.texte;
       else if (e.key === 'ArrowLeft') show(index - 1);
       else if (e.key === 'ArrowRight') show(index + 1);
     });
+
+    // ── Modale PDF (desktop uniquement) ─────────────────────────────────
+    // Sur mobile les navigateurs ne rendent pas les PDF en iframe : on laisse
+    // le lien s'ouvrir normalement dans un nouvel onglet.
+    const pdfBtn = document.getElementById('pdf-open') as HTMLAnchorElement | null;
+    const pdfModal = document.getElementById('pdf-modal');
+    const pdfFrame = document.getElementById('pdf-frame') as HTMLIFrameElement | null;
+
+    if (pdfBtn && pdfModal && pdfFrame) {
+      const surMobile = () =>
+        window.matchMedia('(max-width: 900px)').matches ||
+        window.matchMedia('(pointer: coarse)').matches;
+
+      const fermerPdf = () => {
+        pdfModal.classList.remove('open');
+        pdfModal.setAttribute('aria-hidden', 'true');
+        pdfFrame.src = ''; // libère le lecteur PDF
+        document.body.style.overflow = '';
+      };
+
+      pdfBtn.addEventListener('click', (e) => {
+        if (surMobile()) return; // comportement natif : nouvel onglet
+        e.preventDefault();
+        pdfFrame.src = pdfBtn.href;
+        pdfModal.classList.add('open');
+        pdfModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+
+      document.getElementById('pdf-close')?.addEventListener('click', fermerPdf);
+      pdfModal.addEventListener('click', (e) => { if (e.target === pdfModal) fermerPdf(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && pdfModal.classList.contains('open')) fermerPdf();
+      });
+    }
   </script>
 </Layout>
