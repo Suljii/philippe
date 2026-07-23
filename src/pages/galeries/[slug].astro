@@ -141,10 +141,16 @@ const aTexte = !!galerie.texte;
       line-height: 1;
     }
 
-    /* Variante placée sous le texte de la colonne de gauche */
+    /* Variante placée sous le texte de la colonne de gauche.
+       On réaffirme le style : sinon le bouton hérite de la serif du parent. */
     .pdf-btn-colonne {
       margin: 2rem 0 0;
       display: inline-flex;
+      font-family: var(--font-body);
+      font-size: 0.76rem;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.14em;
     }
 
     /* Mise en page avec texte de gauche */
