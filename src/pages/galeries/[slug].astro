@@ -141,6 +141,12 @@ const aTexte = !!galerie.texte;
       line-height: 1;
     }
 
+    /* Variante placée sous le texte de la colonne de gauche */
+    .pdf-btn-colonne {
+      margin: 2rem 0 0;
+      display: inline-flex;
+    }
+
     /* Mise en page avec texte de gauche */
     .layout-texte {
       display: grid;
@@ -154,10 +160,11 @@ const aTexte = !!galerie.texte;
       line-height: 1.45;
       color: #a0a0a0;
       font-weight: 400;
-      white-space: pre-line;
       position: sticky;
       top: calc(var(--nav-height) + 2rem);
     }
+    /* Les retours à la ligne du texte sont conservés, mais pas ceux du template */
+    .texte-corps { white-space: pre-line; }
     @media (max-width: 800px) {
       .layout-texte { grid-template-columns: 1fr; gap: 2rem; }
       .texte-gauche { position: static; }
@@ -333,7 +340,9 @@ const aTexte = !!galerie.texte;
         {/* La description n'apparaît que sur la page de la galerie elle-même */}
         {galerie.intro && <p class="intro">{galerie.intro}</p>}
       </div>
-      {galerie.pdfUrl && (
+      {/* Sans texte de colonne, le bouton reste dans l'en-tête.
+          Avec texte, il est placé sous celui-ci (colonne de gauche). */}
+      {galerie.pdfUrl && !aTexte && (
         <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn" id="pdf-open">
           <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
         </a>
@@ -377,7 +386,14 @@ const aTexte = !!galerie.texte;
     </div>
   ) : aTexte ? (
     <div class="layout-texte">
-      <aside class="texte-gauche">{galerie.texte}</aside>
+      <aside class="texte-gauche">
+        <div class="texte-corps">{galerie.texte}</div>
+        {galerie.pdfUrl && (
+          <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="pdf-btn pdf-btn-colonne" id="pdf-open">
+            <span class="pdf-icon">↓</span> Ouvrir le textimage (PDF)
+          </a>
+        )}
+      </aside>
       <div class="grid">
         {galerie.images?.map((item: any) => (
           <figure>
