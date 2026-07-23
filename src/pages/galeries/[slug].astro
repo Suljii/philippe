@@ -84,6 +84,12 @@ const aTexte = !!galerie.texte;
       margin: -0.3rem 0 0;
     }
 
+    /* Le texte occupe toute la largeur restante : ligne entière s'il n'y a
+       pas de bouton PDF, espace disponible sinon. */
+    .header-texte {
+      flex: 1;
+      min-width: 0;
+    }
     .header-texte > *:last-child { margin-bottom: 0; }
 
     .sous-titre-page {
@@ -101,7 +107,6 @@ const aTexte = !!galerie.texte;
       font-size: 18px;
       color: var(--color-subtitle);
       line-height: 1.4;
-      max-width: 640px;
       font-weight: 300;
       letter-spacing: 0.08em;
       margin-bottom: 0.75rem;
