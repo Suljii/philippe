@@ -595,14 +595,16 @@ const aTexte = !!galerie.texte;
       if (i >= photos.length) i = 0;
       index = i;
       const btn = photos[i];
-      // Fondu : on masque, on change la source, on réaffiche au chargement
+      // Fondu : on masque, on change la source, on réaffiche au chargement.
+      // Double rAF pour que l'état « opacité 0 » soit peint AVANT le retour à 1
+      // (sinon le navigateur regroupe les changements et ne joue pas la transition).
       lbImg.classList.remove('loaded');
       const reveal = () => lbImg.classList.add('loaded');
       lbImg.onload = reveal;
       lbImg.srcset = btn.dataset.srcset || '';
       lbImg.sizes = btn.dataset.sizes || '';
       lbImg.src = btn.dataset.full || '';
-      if (lbImg.complete) requestAnimationFrame(reveal); // image déjà en cache
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (lbImg.complete) reveal(); }));
       const cap = btn.dataset.caption || '';
       lbImg.alt = cap;
       lbCap.textContent = cap;
