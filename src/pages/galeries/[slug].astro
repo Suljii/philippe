@@ -280,6 +280,8 @@ const aTexte = !!galerie.texte;
     .lightbox.open #lb-img { transform: scale(1); }
     /* Fondu au changement de photo */
     #lb-img.loaded { opacity: 1; }
+    /* Masquage instantané (sans transition) avant le fondu d'apparition */
+    #lb-img.instant { transition: none; }
     #lb-caption {
       color: #bbb;
       font-family: var(--font-title);
@@ -595,16 +597,18 @@ const aTexte = !!galerie.texte;
       if (i >= photos.length) i = 0;
       index = i;
       const btn = photos[i];
-      // Fondu : on masque, on change la source, on réaffiche au chargement.
-      // Double rAF pour que l'état « opacité 0 » soit peint AVANT le retour à 1
-      // (sinon le navigateur regroupe les changements et ne joue pas la transition).
-      lbImg.classList.remove('loaded');
+      // Fondu : masquage INSTANTANÉ (sans transition), puis fondu d'apparition
+      // de la nouvelle image une fois chargée.
+      lbImg.classList.add('instant');   // désactive la transition
+      lbImg.classList.remove('loaded'); // opacité 0 immédiate
+      void lbImg.offsetWidth;           // on peint l'état masqué
+      lbImg.classList.remove('instant'); // réactive la transition pour le fondu
       const reveal = () => lbImg.classList.add('loaded');
       lbImg.onload = reveal;
       lbImg.srcset = btn.dataset.srcset || '';
       lbImg.sizes = btn.dataset.sizes || '';
       lbImg.src = btn.dataset.full || '';
-      requestAnimationFrame(() => requestAnimationFrame(() => { if (lbImg.complete) reveal(); }));
+      if (lbImg.complete) requestAnimationFrame(reveal); // déjà en cache
       const cap = btn.dataset.caption || '';
       lbImg.alt = cap;
       lbCap.textContent = cap;
