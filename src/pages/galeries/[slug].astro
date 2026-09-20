@@ -274,9 +274,12 @@ const aTexte = !!galerie.texte;
       object-fit: contain;
       box-shadow: 0 10px 60px rgba(0, 0, 0, 0.6);
       transform: scale(0.97);
-      transition: transform 0.3s ease;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.25s ease;
     }
     .lightbox.open #lb-img { transform: scale(1); }
+    /* Fondu au changement de photo */
+    #lb-img.loaded { opacity: 1; }
     #lb-caption {
       color: #bbb;
       font-family: var(--font-title);
@@ -381,8 +384,25 @@ const aTexte = !!galerie.texte;
       background: #6a6a6a;
     }
     .lb-next-hint[hidden] { display: none !important; }
+    /* Entrée en glissé depuis la droite, puis léger pouls pour capter l'œil */
+    .lb-next-hint {
+      animation: hint-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both,
+        hint-pulse 2.4s ease-in-out 0.45s infinite;
+    }
+    @keyframes hint-in {
+      from { opacity: 0; transform: translateY(-50%) translateX(16px); }
+      to { opacity: 1; transform: translateY(-50%) translateX(0); }
+    }
+    @keyframes hint-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
     @media (max-width: 900px) {
       .lb-next-hint { display: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lb-next-hint { animation: none; opacity: 0.85; }
+      #lb-img { transition: none; }
     }
 
     /* Sur petit écran, la photo occupe presque toute la largeur : on repasse
@@ -575,9 +595,14 @@ const aTexte = !!galerie.texte;
       if (i >= photos.length) i = 0;
       index = i;
       const btn = photos[i];
+      // Fondu : on masque, on change la source, on réaffiche au chargement
+      lbImg.classList.remove('loaded');
+      const reveal = () => lbImg.classList.add('loaded');
+      lbImg.onload = reveal;
       lbImg.srcset = btn.dataset.srcset || '';
       lbImg.sizes = btn.dataset.sizes || '';
       lbImg.src = btn.dataset.full || '';
+      if (lbImg.complete) requestAnimationFrame(reveal); // image déjà en cache
       const cap = btn.dataset.caption || '';
       lbImg.alt = cap;
       lbCap.textContent = cap;
@@ -591,6 +616,10 @@ const aTexte = !!galerie.texte;
       if (nextGroup && nextGroup !== group) {
         lbNextHint.textContent = nextGroup;
         lbNextHint.hidden = false;
+        // Relance l'animation d'entrée à chaque apparition
+        lbNextHint.style.animation = 'none';
+        void lbNextHint.offsetHeight;
+        lbNextHint.style.animation = '';
       } else {
         lbNextHint.hidden = true;
       }
