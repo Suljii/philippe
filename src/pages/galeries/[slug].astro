@@ -321,32 +321,35 @@ const aTexte = !!galerie.texte;
     /* Le conteneur épouse la taille exacte de la photo affichée */
     .lb-img-wrap {
       position: relative;
-      display: inline-flex;
+      display: inline-block;
       line-height: 0;
     }
-    /* Flèches collées contre les bords de la photo */
+    /* Flèches collées juste à l'extérieur des bords de la photo */
     .lb-nav {
       position: absolute;
       top: 50%;
-      transform: translateY(-50%);
       background: none;
       border: 0;
       color: #fff;
       cursor: pointer;
       line-height: 1;
       font-size: 3rem;
-      padding: 0.2rem 0.5rem;
-      opacity: 0.85;
+      padding: 0.2rem 0.6rem;
+      opacity: 0.8;
       user-select: none;
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
-      transition: transform 0.2s, opacity 0.2s;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+      transition: opacity 0.2s;
     }
-    .lb-nav:hover { opacity: 1; transform: translateY(-50%) scale(1.2); }
-    .lb-prev { left: 0.4rem; }
-    .lb-next { right: 0.4rem; }
+    .lb-nav:hover { opacity: 1; }
+    .lb-prev { left: 0; transform: translate(-100%, -50%); }
+    .lb-next { right: 0; transform: translate(100%, -50%); }
 
-    @media (max-width: 600px) {
+    /* Sur petit écran, la photo occupe presque toute la largeur : on repasse
+       les flèches à l'intérieur des bords pour qu'elles restent visibles. */
+    @media (max-width: 700px) {
       .lb-nav { font-size: 2.4rem; }
+      .lb-prev { left: 0.2rem; transform: translate(0, -50%); }
+      .lb-next { right: 0.2rem; transform: translate(0, -50%); }
       .lb-close { font-size: 2rem; }
     }
   </style>
