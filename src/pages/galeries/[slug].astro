@@ -303,34 +303,50 @@ const aTexte = !!galerie.texte;
     }
     .pdf-dl:hover { color: #fff; }
 
-    .lb-close, .lb-nav {
+    .lb-close {
       position: fixed;
+      top: 1.2rem;
+      right: 1.6rem;
+      font-size: 2.6rem;
       background: none;
       border: 0;
       color: #ddd;
       cursor: pointer;
       line-height: 1;
-      transition: color 0.2s, transform 0.2s;
+      transition: color 0.2s;
       user-select: none;
     }
-    .lb-close:hover, .lb-nav:hover { color: #fff; }
-    .lb-close {
-      top: 1.2rem;
-      right: 1.6rem;
-      font-size: 2.6rem;
+    .lb-close:hover { color: #fff; }
+
+    /* Le conteneur épouse la taille exacte de la photo affichée */
+    .lb-img-wrap {
+      position: relative;
+      display: inline-flex;
+      line-height: 0;
     }
+    /* Flèches collées contre les bords de la photo */
     .lb-nav {
+      position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 3.5rem;
-      padding: 0 1.2rem;
+      background: none;
+      border: 0;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      font-size: 3rem;
+      padding: 0.2rem 0.5rem;
+      opacity: 0.85;
+      user-select: none;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      transition: transform 0.2s, opacity 0.2s;
     }
-    .lb-nav:hover { transform: translateY(-50%) scale(1.15); }
-    .lb-prev { left: 0.5rem; }
-    .lb-next { right: 0.5rem; }
+    .lb-nav:hover { opacity: 1; transform: translateY(-50%) scale(1.2); }
+    .lb-prev { left: 0.4rem; }
+    .lb-next { right: 0.4rem; }
 
     @media (max-width: 600px) {
-      .lb-nav { font-size: 2.4rem; padding: 0 0.5rem; }
+      .lb-nav { font-size: 2.4rem; }
       .lb-close { font-size: 2rem; }
     }
   </style>
@@ -457,10 +473,12 @@ const aTexte = !!galerie.texte;
   {/* ── Lightbox / modale plein écran ── */}
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lb-close" aria-label="Fermer">×</button>
-    <button class="lb-nav lb-prev" aria-label="Précédent">‹</button>
-    <button class="lb-nav lb-next" aria-label="Suivant">›</button>
     <figure class="lb-stage">
-      <img id="lb-img" src="" alt="" />
+      <div class="lb-img-wrap">
+        <button class="lb-nav lb-prev" aria-label="Précédent">‹</button>
+        <img id="lb-img" src="" alt="" />
+        <button class="lb-nav lb-next" aria-label="Suivant">›</button>
+      </div>
       <figcaption id="lb-caption"></figcaption>
     </figure>
   </div>
