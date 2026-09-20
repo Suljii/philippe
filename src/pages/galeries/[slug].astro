@@ -354,6 +354,37 @@ const aTexte = !!galerie.texte;
     .lb-prev { left: 0; transform: translate(-100%, -50%); }
     .lb-next { right: 0; transform: translate(100%, -50%); }
 
+    /* Aperçu du golf suivant, label vertical stylisé à droite (desktop) */
+    .lb-next-hint {
+      position: fixed;
+      right: 1.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl;
+      font-family: var(--font-title);
+      font-size: 15px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #8f8f8f;
+      max-height: 78vh;
+      padding-top: 1.6rem;
+      pointer-events: none;
+    }
+    /* Petit trait décoratif au-dessus du nom */
+    .lb-next-hint::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1px;
+      height: 1rem;
+      background: #6a6a6a;
+    }
+    .lb-next-hint[hidden] { display: none !important; }
+    @media (max-width: 900px) {
+      .lb-next-hint { display: none !important; }
+    }
+
     /* Sur petit écran, la photo occupe presque toute la largeur : on repasse
        les flèches à l'intérieur des bords pour qu'elles restent visibles. */
     @media (max-width: 700px) {
@@ -487,6 +518,7 @@ const aTexte = !!galerie.texte;
   {/* ── Lightbox / modale plein écran ── */}
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lb-close" aria-label="Fermer">×</button>
+    <div id="lb-next-hint" class="lb-next-hint" hidden></div>
     <figure class="lb-stage">
       <div id="lb-group" class="lb-group" hidden></div>
       <div class="lb-img-wrap">
@@ -516,6 +548,7 @@ const aTexte = !!galerie.texte;
     const lbImg = document.getElementById('lb-img') as HTMLImageElement;
     const lbCap = document.getElementById('lb-caption') as HTMLElement;
     const lbGroup = document.getElementById('lb-group') as HTMLElement;
+    const lbNextHint = document.getElementById('lb-next-hint') as HTMLElement;
     const photos = Array.from(document.querySelectorAll<HTMLButtonElement>('.photo'));
     let index = -1;
     let preloadedAll = false;
@@ -552,6 +585,15 @@ const aTexte = !!galerie.texte;
       const group = btn.dataset.group || '';
       lbGroup.textContent = group;
       lbGroup.hidden = !group;
+      // Aperçu du golf suivant, uniquement si on va changer de golf
+      const next = photos[i + 1 >= photos.length ? 0 : i + 1];
+      const nextGroup = next?.dataset.group || '';
+      if (nextGroup && nextGroup !== group) {
+        lbNextHint.textContent = nextGroup;
+        lbNextHint.hidden = false;
+      } else {
+        lbNextHint.hidden = true;
+      }
       // précharge les voisines pour une navigation instantanée
       preload(i + 1 >= photos.length ? 0 : i + 1);
       preload(i - 1 < 0 ? photos.length - 1 : i - 1);
