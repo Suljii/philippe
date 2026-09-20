@@ -573,7 +573,6 @@ const aTexte = !!galerie.texte;
     const lbNextHint = document.getElementById('lb-next-hint') as HTMLElement;
     const photos = Array.from(document.querySelectorAll<HTMLButtonElement>('.photo'));
     let index = -1;
-    let preloadedAll = false;
 
     function preload(i: number) {
       const btn = photos[i];
@@ -584,12 +583,13 @@ const aTexte = !!galerie.texte;
       img.src = btn.dataset.full || '';
     }
 
-    function preloadAll() {
-      if (preloadedAll) return;
-      preloadedAll = true;
-      const run = () => photos.forEach((_, i) => preload(i));
-      if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run);
-      else setTimeout(run, 200);
+    // Précharge une fenêtre autour de la photo courante (et pas toute la
+    // galerie : sur « Des golfs » cela évitait de télécharger ~85 images).
+    function preloadWindow(i: number) {
+      for (let d = 1; d <= 3; d++) {
+        preload((i + d) % photos.length);
+        preload((i - d + photos.length) % photos.length);
+      }
     }
 
     function show(i: number) {
@@ -630,8 +630,7 @@ const aTexte = !!galerie.texte;
         lbNextHint.hidden = true;
       }
       // précharge les voisines pour une navigation instantanée
-      preload(i + 1 >= photos.length ? 0 : i + 1);
-      preload(i - 1 < 0 ? photos.length - 1 : i - 1);
+      preloadWindow(i);
     }
 
     function open(i: number) {
@@ -639,7 +638,6 @@ const aTexte = !!galerie.texte;
       lb.classList.add('open');
       lb.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      preloadAll();
     }
 
     function close() {
