@@ -46,9 +46,24 @@ if (!galerie) return Astro.redirect("/404");
 const estCategorie = (galerie.sousGaleries?.length ?? 0) > 0;
 const titre = galerie.titrePage || galerie.nom || galerie.titreHomepage;
 const aTexte = !!galerie.texte;
+
+// SEO : description et image de partage propres à la galerie
+const metaDescription = (
+  galerie.intro ||
+  galerie.sousTitre ||
+  galerie.texte ||
+  `${titre} — photographies de Philippe Muraro.`
+)
+  .replace(/\s+/g, " ")
+  .slice(0, 160)
+  .trim();
+const premiereImage =
+  galerie.images?.[0]?.image ||
+  galerie.sousGaleries?.[0]?.images?.[0]?.image;
+const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
 ---
 
-<Layout title={titre}>
+<Layout title={titre} description={metaDescription} image={ogImage}>
   <style>
     .retour {
       display: inline-block;

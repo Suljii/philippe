@@ -1,20 +1,50 @@
 ---
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
   fullscreen?: boolean;
 }
 
-const { title, fullscreen = false } = Astro.props;
-const currentPath = Astro.url.pathname;
+const DEFAULT_DESCRIPTION =
+  "Photographies de Philippe Muraro : golfs au clair de lune, fleurs des bords de route, portraits et textimages. Galeries et livres photo.";
 
+const {
+  title,
+  description = DEFAULT_DESCRIPTION,
+  image = "/accueil.webp",
+  fullscreen = false,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
 const galeriesActive = currentPath === '/galeries' || currentPath.startsWith('/galeries/');
+
+// URLs absolues pour le référencement et le partage social
+const canonical = new URL(currentPath, Astro.site ?? Astro.url.origin).href;
+const ogImage = new URL(image, Astro.site ?? Astro.url.origin).href;
+const fullTitle = `${title} — Philippe Muraro`;
 ---
 
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} — Philippe Muraro</title>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {/* Open Graph (partage Facebook, LinkedIn, etc.) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Philippe Muraro" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="fr_FR" />
+    {/* Twitter / X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     {/* Polices auto-hébergées (RGPD + perf : plus de requête bloquante externe) */}
     <link rel="preload" href="/fonts/sofia-sans-extra-condensed-300-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/bellota-text-300-latin.woff2" as="font" type="font/woff2" crossorigin />
