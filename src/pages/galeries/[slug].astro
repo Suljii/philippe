@@ -220,7 +220,8 @@ const aTexte = !!galerie.texte;
     }
 
     /* Vue catégorie : sections par sous-galerie */
-    .sous-galerie { margin-bottom: 3rem; }
+    .sous-galerie { margin-bottom: 3rem; scroll-margin-top: calc(var(--nav-height) + 1.5rem); }
+    .grid figure { scroll-margin-top: calc(var(--nav-height) + 1.5rem); }
     .sous-galerie:last-child { margin-bottom: 0; }
     .sous-titre {
       font-family: var(--font-title);
@@ -257,6 +258,15 @@ const aTexte = !!galerie.texte;
       flex-direction: column;
       align-items: center;
       gap: 0.9rem;
+    }
+    /* Nom du golf / de la sous-galerie, au-dessus de la photo */
+    .lb-group {
+      font-family: var(--font-title);
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #e8e8e8;
+      text-align: center;
     }
     #lb-img {
       max-width: 92vw;
@@ -391,6 +401,7 @@ const aTexte = !!galerie.texte;
                   data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
                   data-sizes={FULL_SIZES}
                   data-caption={item.titre || ''}
+                  data-group={sg.nom || sg.titreHomepage}
                 >
                   <img
                     src={imgSrc(item.image, 340, { square: true })}
@@ -477,6 +488,7 @@ const aTexte = !!galerie.texte;
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="lb-close" aria-label="Fermer">×</button>
     <figure class="lb-stage">
+      <div id="lb-group" class="lb-group" hidden></div>
       <div class="lb-img-wrap">
         <button class="lb-nav lb-prev" aria-label="Précédent">‹</button>
         <img id="lb-img" src="" alt="" />
@@ -503,6 +515,7 @@ const aTexte = !!galerie.texte;
     const lb = document.getElementById('lightbox') as HTMLElement;
     const lbImg = document.getElementById('lb-img') as HTMLImageElement;
     const lbCap = document.getElementById('lb-caption') as HTMLElement;
+    const lbGroup = document.getElementById('lb-group') as HTMLElement;
     const photos = Array.from(document.querySelectorAll<HTMLButtonElement>('.photo'));
     let index = -1;
     let preloadedAll = false;
@@ -535,6 +548,10 @@ const aTexte = !!galerie.texte;
       const cap = btn.dataset.caption || '';
       lbImg.alt = cap;
       lbCap.textContent = cap;
+      // Nom du golf / sous-galerie au-dessus de la photo
+      const group = btn.dataset.group || '';
+      lbGroup.textContent = group;
+      lbGroup.hidden = !group;
       // précharge les voisines pour une navigation instantanée
       preload(i + 1 >= photos.length ? 0 : i + 1);
       preload(i - 1 < 0 ? photos.length - 1 : i - 1);
@@ -552,6 +569,12 @@ const aTexte = !!galerie.texte;
       lb.classList.remove('open');
       lb.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      // Recentre la page sur la dernière photo vue (et donc son golf)
+      const btn = photos[index];
+      if (btn) {
+        const cible = btn.closest('.sous-galerie') || btn.closest('figure') || btn;
+        cible.scrollIntoView({ block: 'start' });
+      }
     }
 
     photos.forEach((btn, i) => btn.addEventListener('click', () => open(i)));
