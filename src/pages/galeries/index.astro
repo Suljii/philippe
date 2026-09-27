@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
-const CARD_WIDTHS = [170, 340, 510];
-const CARD_SIZES = "170px";
+const CARD_WIDTHS = [170, 340, 510, 700];
+const CARD_SIZES = "(max-width: 768px) 45vw, 170px";
 
 // Galeries de premier niveau uniquement (catégories + galeries simples).
 // Les sous-galeries (ex. les golfs) n'apparaissent PAS ici.
@@ -45,8 +45,11 @@ const galeries = await sanityClient.fetch(`
     }
 
     /* Sur mobile, les vignettes sont centrées horizontalement */
+    /* Sur mobile : cartes fluides qui remplissent la largeur (plus grandes) */
     @media (max-width: 768px) {
-      .grid { justify-content: center; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+      .card { width: auto; }
+      .card img { width: 100%; height: auto; aspect-ratio: 1/1; }
     }
 
     .card { width: 170px; }

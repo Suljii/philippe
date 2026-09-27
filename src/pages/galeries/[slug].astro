@@ -2,8 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
-const CARD_WIDTHS = [170, 340, 510];
-const CARD_SIZES = "170px";
+const CARD_WIDTHS = [170, 340, 510, 700, 1000];
+const CARD_SIZES = "(max-width: 768px) 90vw, 170px";
 const FULL_WIDTHS = [1000, 1600, 2000, 2600, 3200];
 const FULL_SIZES = "92vw";
 
@@ -197,9 +197,12 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       gap: 1.25rem;
     }
 
-    /* Sur mobile, les vignettes sont centrées horizontalement */
+    /* Sur mobile : grandes tuiles (1 par ligne en portrait, 2 en paysage) */
     @media (max-width: 768px) {
-      .grid { justify-content: center; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 0.8rem; }
+      .grid figure { width: auto; }
+      .photo { width: 100%; height: auto; aspect-ratio: 1/1; }
+      figcaption { width: auto; }
     }
 
     .grid figure { margin: 0; width: 170px; }
@@ -425,10 +428,27 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
     /* Sur petit écran, la photo occupe presque toute la largeur : on repasse
        les flèches à l'intérieur des bords pour qu'elles restent visibles. */
     @media (max-width: 700px) {
-      .lb-nav { font-size: 2.4rem; }
-      .lb-prev { left: 0.2rem; transform: translate(0, -50%); }
-      .lb-next { right: 0.2rem; transform: translate(0, -50%); }
+      /* Flèches ancrées aux bords de l'ÉCRAN (fixed) : toujours visibles,
+         sur les côtés, et sans dépendre de la taille chargée de la photo. */
+      .lb-nav {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2.6rem;
+      }
+      .lb-prev { left: 0.2rem; right: auto; }
+      .lb-next { right: 0.2rem; left: auto; }
       .lb-close { font-size: 2rem; }
+    }
+
+    /* Écrans bas de plafond (téléphone en paysage) : on maximise la photo
+       et on réduit le décor vertical (nom du golf, légende, marges). */
+    @media (max-height: 560px) {
+      .lb-stage { gap: 0.2rem; max-height: 100vh; }
+      #lb-img { max-height: 95vh; max-width: 98vw; }
+      .lb-group { font-size: 11px; }
+      #lb-caption { display: none; } /* on masque la légende en paysage pour agrandir la photo */
+      .lb-close { top: 0.4rem; right: 0.6rem; font-size: 1.6rem; }
     }
   </style>
 

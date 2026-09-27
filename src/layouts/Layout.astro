@@ -276,7 +276,7 @@ const fullTitle = `${title} — Philippe Muraro`;
       /* ── MOBILE ── */
       @media (max-width: 768px) {
         :root {
-          --h-padding: 1.25rem;
+          --h-padding: 0.75rem;
           --nav-height: 70px;
         }
 
@@ -297,10 +297,10 @@ const fullTitle = `${title} — Philippe Muraro`;
           backdrop-filter: blur(6px);
           border-top: 1px solid var(--color-border);
           padding: 0.5rem 0;
-          transform: translateY(-12px);
+          transform: translateY(-8px);
           opacity: 0;
           visibility: hidden;
-          transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+          transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
         }
         nav.open {
           transform: translateY(0);
@@ -308,7 +308,7 @@ const fullTitle = `${title} — Philippe Muraro`;
           visibility: visible;
         }
         nav a {
-          padding: 1rem var(--h-padding);
+          padding: 1rem 1.25rem;
           font-size: 1rem;
           border-bottom: 1px solid #262626;
         }
@@ -355,17 +355,25 @@ const fullTitle = `${title} — Philippe Muraro`;
     <script>
       const toggle = document.getElementById('nav-toggle');
       const nav = document.getElementById('site-nav');
-      toggle?.addEventListener('click', () => {
+      const closeNav = () => {
+        nav?.classList.remove('open');
+        toggle?.setAttribute('aria-expanded', 'false');
+      };
+      toggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
         const open = nav?.classList.toggle('open');
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
       // Ferme le menu quand on clique un lien
-      nav?.querySelectorAll('a').forEach((a) =>
-        a.addEventListener('click', () => {
-          nav.classList.remove('open');
-          toggle?.setAttribute('aria-expanded', 'false');
-        }),
-      );
+      nav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeNav));
+      // Ferme le menu quand on clique en dehors (ou touche Échap)
+      document.addEventListener('click', (e) => {
+        if (!nav?.classList.contains('open')) return;
+        if (!nav.contains(e.target as Node) && e.target !== toggle) closeNav();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeNav();
+      });
     </script>
   </body>
 </html>
