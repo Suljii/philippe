@@ -758,8 +758,9 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       const dx = t.clientX - tsX, dy = t.clientY - tsY;
       const ax = Math.abs(dx), ay = Math.abs(dy);
       if (Date.now() - tsT > 700) return;      // trop lent = pas un swipe
-      if (ax > 45 && ax > ay) show(dx < 0 ? index + 1 : index - 1); // horizontal
-      else if (dy > 70 && ay > ax) close();    // vers le bas = fermer
+      if (ax < 45 && ay < 45) return;          // trop court = pas un swipe
+      if (ax >= ay) show(dx < 0 ? index + 1 : index - 1); // horizontal : gauche = suivante
+      else show(dy < 0 ? index + 1 : index - 1);          // vertical : haut = suivante
     }, { passive: true });
 
     // ── Modale PDF (desktop uniquement) ─────────────────────────────────
