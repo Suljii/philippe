@@ -747,6 +747,21 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       else if (e.key === 'ArrowRight') show(index + 1);
     });
 
+    // ── Swipe tactile (mobile) : gauche/droite = changer de photo, bas = fermer
+    let tsX = 0, tsY = 0, tsT = 0;
+    lb.addEventListener('touchstart', (e) => {
+      const t = e.changedTouches[0];
+      tsX = t.clientX; tsY = t.clientY; tsT = Date.now();
+    }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      const t = e.changedTouches[0];
+      const dx = t.clientX - tsX, dy = t.clientY - tsY;
+      const ax = Math.abs(dx), ay = Math.abs(dy);
+      if (Date.now() - tsT > 700) return;      // trop lent = pas un swipe
+      if (ax > 45 && ax > ay) show(dx < 0 ? index + 1 : index - 1); // horizontal
+      else if (dy > 70 && ay > ax) close();    // vers le bas = fermer
+    }, { passive: true });
+
     // ── Modale PDF (desktop uniquement) ─────────────────────────────────
     // Sur mobile les navigateurs ne rendent pas les PDF en iframe : on laisse
     // le lien s'ouvrir normalement dans un nouvel onglet.

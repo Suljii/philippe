@@ -1,0 +1,104 @@
+---
+import Layout from "../layouts/Layout.astro";
+// ⚠️ À COMPLÉTER : remplace les [crochets] par les vraies informations.
+---
+
+<Layout
+  title="Confidentialité"
+  description="Politique de confidentialité et protection des données (RGPD) du site de Philippe Muraro."
+>
+  <style>
+    .legal { max-width: 720px; }
+    .legal h1 {
+      font-family: var(--font-title);
+      font-size: var(--size-title);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-title);
+      margin-bottom: 2rem;
+    }
+    .legal h2 {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-subtitle);
+      margin: 2rem 0 0.6rem;
+    }
+    .legal p, .legal li {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      line-height: 1.6;
+      color: #999;
+    }
+    .legal a { color: #bbb; }
+    .legal ul { padding-left: 1.2rem; }
+  </style>
+
+  <div class="legal">
+    <h1>Politique de confidentialité</h1>
+
+    <p>
+      Cette page décrit la façon dont les données personnelles sont traitées sur ce
+      site, conformément au Règlement général sur la protection des données (RGPD).
+    </p>
+
+    <h2>Responsable du traitement</h2>
+    <p>
+      Philippe Muraro — Email : [email de contact].
+    </p>
+
+    <h2>Données collectées</h2>
+    <p>
+      Le site ne collecte des données que lorsque vous utilisez le
+      <strong>formulaire de contact</strong>. Les informations transmises sont :
+    </p>
+    <ul>
+      <li>votre nom ;</li>
+      <li>votre adresse email ;</li>
+      <li>le contenu de votre message.</li>
+    </ul>
+
+    <h2>Finalité et base légale</h2>
+    <p>
+      Ces données sont utilisées uniquement pour répondre à votre demande. La base
+      légale du traitement est votre consentement, exprimé par l'envoi du formulaire.
+    </p>
+
+    <h2>Destinataires et sous-traitants</h2>
+    <p>
+      Les messages sont acheminés par email via le service <strong>Resend</strong>, et le
+      site est hébergé par <strong>Vercel</strong>. Ces prestataires peuvent traiter les
+      données en dehors de l'Union européenne (États-Unis), dans le cadre de garanties
+      appropriées (clauses contractuelles types). Vos données ne sont ni vendues ni
+      cédées à des tiers à des fins commerciales.
+    </p>
+
+    <h2>Durée de conservation</h2>
+    <p>
+      Les messages sont conservés le temps nécessaire au traitement de votre demande,
+      puis supprimés [préciser : par exemple au maximum 12 mois après le dernier échange].
+    </p>
+
+    <h2>Cookies et mesure d'audience</h2>
+    <p>
+      Ce site n'utilise <strong>aucun cookie de suivi</strong> ni outil de mesure
+      d'audience. Les polices de caractères sont hébergées localement (aucune requête
+      vers des services tiers de type Google Fonts).
+    </p>
+
+    <h2>Vos droits</h2>
+    <p>
+      Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et
+      d'opposition concernant vos données. Pour l'exercer, écrivez à [email de contact].
+      Vous pouvez également introduire une réclamation auprès de la CNIL
+      (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).
+    </p>
+
+    <p style="margin-top:2rem">
+      Voir aussi les <a href="/mentions-legales">mentions légales</a>.
+    </p>
+  </div>
+</Layout>

@@ -1,0 +1,76 @@
+---
+import Layout from "../layouts/Layout.astro";
+// ⚠️ À COMPLÉTER : remplace les [crochets] par les vraies informations.
+---
+
+<Layout
+  title="Mentions légales"
+  description="Mentions légales du site de Philippe Muraro, photographe."
+>
+  <style>
+    .legal { max-width: 720px; }
+    .legal h1 {
+      font-family: var(--font-title);
+      font-size: var(--size-title);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-title);
+      margin-bottom: 2rem;
+    }
+    .legal h2 {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-subtitle);
+      margin: 2rem 0 0.6rem;
+    }
+    .legal p, .legal li {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      line-height: 1.6;
+      color: #999;
+    }
+    .legal a { color: #bbb; }
+    .legal ul { padding-left: 1.2rem; }
+  </style>
+
+  <div class="legal">
+    <h1>Mentions légales</h1>
+
+    <h2>Éditeur du site</h2>
+    <p>
+      Le présent site est édité par <strong>Philippe Muraro</strong>, photographe.<br />
+      Adresse : [adresse postale]<br />
+      Email : [email de contact]<br />
+      [Le cas échéant : SIRET n° [numéro] — TVA intracommunautaire [numéro]]
+    </p>
+
+    <h2>Directeur de la publication</h2>
+    <p>Philippe Muraro.</p>
+
+    <h2>Hébergement</h2>
+    <p>
+      Le site est hébergé par <strong>Vercel Inc.</strong><br />
+      340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis —
+      <a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a>
+    </p>
+
+    <h2>Propriété intellectuelle</h2>
+    <p>
+      L'ensemble des photographies et des textes présents sur ce site est la propriété
+      exclusive de Philippe Muraro, sauf mention contraire. Toute reproduction,
+      représentation, modification ou diffusion, totale ou partielle, sans autorisation
+      écrite préalable, est interdite et constitue une contrefaçon sanctionnée par le
+      Code de la propriété intellectuelle.
+    </p>
+
+    <h2>Données personnelles</h2>
+    <p>
+      Le traitement des données transmises via le formulaire de contact est décrit dans
+      la <a href="/confidentialite">politique de confidentialité</a>.
+    </p>
+  </div>
+</Layout>

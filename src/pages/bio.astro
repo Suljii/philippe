@@ -55,6 +55,23 @@ import Layout from "../layouts/Layout.astro";
         gap: 2rem;
       }
     }
+
+    .legal-links {
+      margin-top: 3rem;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: #666;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .legal-links a {
+      color: #888;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .legal-links a:hover { color: #d0d0d0; }
   </style>
 
   <div class="bio">
@@ -102,4 +119,10 @@ import Layout from "../layouts/Layout.astro";
     </div>
     <img src="/flipoparpao.webp" alt="Philippe Muraro" />
   </div>
+
+  <nav class="legal-links" aria-label="Informations légales">
+    <a href="/mentions-legales">Mentions légales</a>
+    <span aria-hidden="true">·</span>
+    <a href="/confidentialite">Confidentialité (RGPD)</a>
+  </nav>
 </Layout>
