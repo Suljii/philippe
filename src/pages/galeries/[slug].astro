@@ -232,7 +232,9 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
     /* Sur mobile : grandes tuiles pleine largeur (placé APRÈS les règles de
        base pour gagner la cascade — sinon .photo{width:170px} l'emportait). */
     @media (max-width: 768px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 0.8rem; }
+      /* Une tuile centrée à ~82% de la largeur : plus grande qu'avant,
+         mais pas pleine largeur, avec une marge modérée. */
+      .grid { grid-template-columns: min(82vw, 360px); justify-content: center; gap: 0.8rem; }
       .grid figure { width: auto; }
       .photo { width: 100%; height: auto; aspect-ratio: 1/1; }
       figcaption { width: auto; }
@@ -429,17 +431,32 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
     /* Sur petit écran, la photo occupe presque toute la largeur : on repasse
        les flèches à l'intérieur des bords pour qu'elles restent visibles. */
     @media (max-width: 700px) {
-      /* Flèches ancrées aux bords de l'ÉCRAN (fixed) : toujours visibles,
-         sur les côtés, et sans dépendre de la taille chargée de la photo. */
+      /* Portrait : flèches en HAUT et EN BAS (centrées) pour libérer les côtés
+         et afficher la photo au plus grand. Le chevron est tourné à 90°. */
       .lb-nav {
         position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        right: auto;
+        top: auto;
         font-size: 2.6rem;
+        transform: translateX(-50%) rotate(90deg);
       }
-      .lb-prev { left: 0.2rem; right: auto; }
-      .lb-next { right: 0.2rem; left: auto; }
+      .lb-prev { top: 0.4rem; }
+      .lb-next { bottom: 0.4rem; }
       .lb-close { font-size: 2rem; }
+      /* Boîte fixe + object-fit:contain : la photo remplit l'espace au maximum
+         (98vw × 86vh) sans déformation, quelle que soit sa résolution.
+         max-width/height étaient de simples plafonds, l'image restait petite. */
+      .lb-stage { max-width: 100vw; gap: 0.3rem; }
+      .lb-img-wrap { display: block; width: 94vw; text-align: center; }
+      #lb-img {
+        width: 94vw;
+        height: 86vh;
+        max-width: none;
+        max-height: none;
+        object-fit: contain;
+      }
+      #lb-caption { display: none; } /* on masque la légende pour maximiser la photo */
     }
 
     /* Écrans bas de plafond (téléphone en paysage) : on maximise la photo
