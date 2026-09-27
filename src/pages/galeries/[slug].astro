@@ -197,14 +197,6 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       gap: 1.25rem;
     }
 
-    /* Sur mobile : grandes tuiles (1 par ligne en portrait, 2 en paysage) */
-    @media (max-width: 768px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 0.8rem; }
-      .grid figure { width: auto; }
-      .photo { width: 100%; height: auto; aspect-ratio: 1/1; }
-      figcaption { width: auto; }
-    }
-
     .grid figure { margin: 0; width: 170px; }
     .photo {
       display: block;
@@ -235,6 +227,15 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       font-weight: 300;
       text-align: center;
       width: 170px;
+    }
+
+    /* Sur mobile : grandes tuiles pleine largeur (placé APRÈS les règles de
+       base pour gagner la cascade — sinon .photo{width:170px} l'emportait). */
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 0.8rem; }
+      .grid figure { width: auto; }
+      .photo { width: 100%; height: auto; aspect-ratio: 1/1; }
+      figcaption { width: auto; }
     }
 
     /* Vue catégorie : sections par sous-galerie */

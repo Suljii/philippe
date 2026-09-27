@@ -44,14 +44,6 @@ const galeries = await sanityClient.fetch(`
       gap: 1.25rem;
     }
 
-    /* Sur mobile, les vignettes sont centrées horizontalement */
-    /* Sur mobile : cartes fluides qui remplissent la largeur (plus grandes) */
-    @media (max-width: 768px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
-      .card { width: auto; }
-      .card img { width: 100%; height: auto; aspect-ratio: 1/1; }
-    }
-
     .card { width: 170px; }
     .card img { width: 170px; height: 170px; }
 
@@ -72,6 +64,14 @@ const galeries = await sanityClient.fetch(`
 
     .card:hover img {
       opacity: 0.65;
+    }
+
+    /* Sur mobile : cartes fluides pleine largeur (placé APRÈS les règles de
+       base pour gagner la cascade). */
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.6rem; }
+      .card { width: auto; }
+      .card img { width: 100%; height: auto; aspect-ratio: 1/1; }
     }
 
     .card-info {
