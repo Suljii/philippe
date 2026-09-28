@@ -4,8 +4,6 @@ import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
 const CARD_WIDTHS = [170, 340, 510, 700, 1000];
 const CARD_SIZES = "(max-width: 768px) 90vw, 170px";
-const FULL_WIDTHS = [1000, 1600, 2000, 2600, 3200];
-const FULL_SIZES = "92vw";
 
 export const prerender = false;
 
@@ -28,13 +26,17 @@ const galerie = await sanityClient.fetch(
       images[] {
         titre,
         image,
-        "lqip": image.asset->metadata.lqip
+        "lqip": image.asset->metadata.lqip,
+        "w": image.asset->metadata.dimensions.width,
+        "h": image.asset->metadata.dimensions.height
       }
     },
     images[] {
       titre,
       image,
-      "lqip": image.asset->metadata.lqip
+      "lqip": image.asset->metadata.lqip,
+      "w": image.asset->metadata.dimensions.width,
+      "h": image.asset->metadata.dimensions.height
     }
   }
 `,
@@ -511,9 +513,9 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
                 <button
                   type="button"
                   class="photo"
-                  data-full={imgSrc(item.image, 2000)}
-                  data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
-                  data-sizes={FULL_SIZES}
+                  data-full={imgSrc(item.image, 2000, { quality: 90 })}
+                  data-w={item.w}
+                  data-h={item.h}
                   data-caption={item.titre || ''}
                   data-group={sg.nom || sg.titreHomepage}
                 >
@@ -550,9 +552,9 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
             <button
               type="button"
               class="photo"
-              data-full={imgSrc(item.image, 2000)}
-              data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
-              data-sizes={FULL_SIZES}
+              data-full={imgSrc(item.image, 2000, { quality: 90 })}
+              data-w={item.w}
+              data-h={item.h}
               data-caption={item.titre || ''}
             >
               <img
@@ -577,9 +579,9 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
           <button
             type="button"
             class="photo"
-            data-full={imgSrc(item.image, 2000)}
-            data-srcset={imgSrcSet(item.image, FULL_WIDTHS)}
-            data-sizes={FULL_SIZES}
+            data-full={imgSrc(item.image, 2000, { quality: 90 })}
+            data-w={item.w}
+            data-h={item.h}
             data-caption={item.titre || ''}
           >
             <img
@@ -668,6 +670,11 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       // l'élément épouse exactement la photo (via max-width/height), sans bande.
       lbImg.removeAttribute('srcset');
       lbImg.removeAttribute('sizes');
+      // Ne jamais agrandir au-delà de la taille réelle de la photo (sinon flou) :
+      // largeur/hauteur affichées = min(écran, dimensions natives).
+      const nw = btn.dataset.w, nh = btn.dataset.h;
+      lbImg.style.maxWidth = nw ? `min(94vw, ${nw}px)` : '';
+      lbImg.style.maxHeight = nh ? `min(90vh, ${nh}px)` : '';
       lbImg.src = btn.dataset.full || '';
       if (lbImg.complete) requestAnimationFrame(reveal); // déjà en cache
       const cap = btn.dataset.caption || '';
