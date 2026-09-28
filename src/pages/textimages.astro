@@ -2,6 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../lib/sanity";
 
+// SSR : reflète immédiatement les nouveaux textimages publiés dans le CMS.
+export const prerender = false;
+
 const COVER_WIDTHS = [200, 400, 600];
 const COVER_SIZES = "200px";
 

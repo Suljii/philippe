@@ -2,6 +2,9 @@
 import Layout from "../../layouts/Layout.astro";
 import { sanityClient, imgSrc, imgSrcSet } from "../../lib/sanity";
 
+// SSR : la liste reflète immédiatement les galeries ajoutées dans le CMS.
+export const prerender = false;
+
 const CARD_WIDTHS = [170, 340, 510, 700];
 const CARD_SIZES = "(max-width: 768px) 45vw, 170px";
 
