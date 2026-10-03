@@ -50,6 +50,8 @@ if (!galerie) return Astro.redirect("/404");
 const estCategorie = (galerie.sousGaleries?.length ?? 0) > 0;
 const titre = galerie.titrePage || galerie.nom || galerie.titreHomepage;
 const aTexte = !!galerie.texte;
+// Mise en page « colonne de gauche » dès qu'il y a du texte ou une vignette textimage
+const aColonne = !!(galerie.texte || galerie.cover);
 
 // SEO : description et image de partage propres à la galerie
 const metaDescription = (
@@ -519,7 +521,7 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
       </div>
       {/* Sans texte de colonne, bouton (+ vignette textimage) dans l'en-tête.
           Avec texte, ils sont placés sous celui-ci (colonne de gauche). */}
-      {galerie.pdfUrl && !aTexte && (
+      {galerie.pdfUrl && !aColonne && (
         <div class="textimage-bloc">
           {galerie.cover && (
             <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="textimage-cover" aria-label="Ouvrir le textimage">
@@ -577,10 +579,10 @@ const ogImage = premiereImage ? imgSrc(premiereImage, 1200) : undefined;
         </section>
       ))}
     </div>
-  ) : aTexte ? (
+  ) : aColonne ? (
     <div class="layout-texte">
       <aside class="texte-gauche">
-        <div class="texte-corps">{galerie.texte}</div>
+        {galerie.texte && <div class="texte-corps">{galerie.texte}</div>}
         {galerie.pdfUrl && galerie.cover && (
           <a href={galerie.pdfUrl} target="_blank" rel="noopener" class="textimage-cover textimage-cover-colonne" aria-label="Ouvrir le textimage">
             <img
