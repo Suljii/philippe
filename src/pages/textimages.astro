@@ -5,8 +5,8 @@ import { sanityClient, imgSrc, imgSrcSet } from "../lib/sanity";
 // SSR : reflète immédiatement les nouveaux textimages publiés dans le CMS.
 export const prerender = false;
 
-const COVER_WIDTHS = [200, 400, 600];
-const COVER_SIZES = "200px";
+const COVER_WIDTHS = [170, 340, 510];
+const COVER_SIZES = "170px";
 
 const textimages = await sanityClient.fetch(`
   *[_type == "galerie" && defined(pdf.asset)] | order(ordre asc) {
@@ -54,7 +54,7 @@ const livres = textimages.filter((t: any) => {
 
     .textimage {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 170px 1fr;
       gap: 2rem;
       align-items: start;
     }
@@ -68,9 +68,9 @@ const livres = textimages.filter((t: any) => {
     }
 
     .textimage img {
-      width: 100%;
+      width: 170px;
+      height: 170px;
       display: block;
-      aspect-ratio: 2/3;
       object-fit: cover;
     }
 
@@ -141,8 +141,8 @@ const livres = textimages.filter((t: any) => {
         <div class="textimage">
           {textimage.couverture && (
             <img
-              src={imgSrc(textimage.couverture, 400)}
-              srcset={imgSrcSet(textimage.couverture, COVER_WIDTHS)}
+              src={imgSrc(textimage.couverture, 340, { square: true })}
+              srcset={imgSrcSet(textimage.couverture, COVER_WIDTHS, { square: true })}
               sizes={COVER_SIZES}
               alt={textimage.titre}
               loading="lazy"
