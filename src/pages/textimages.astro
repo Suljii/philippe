@@ -19,6 +19,16 @@ const textimages = await sanityClient.fetch(`
     "lqip": coalesce(images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
   }
 `);
+
+// Dédoublonnage : un même livre (ex. « Correspondance monumentale » partagé par
+// deux sous-galeries Stade de France) n'apparaît qu'une fois.
+const vus = new Set();
+const livres = textimages.filter((t: any) => {
+  const cle = (t.titre || "").trim().toLowerCase();
+  if (vus.has(cle)) return false;
+  vus.add(cle);
+  return true;
+});
 ---
 
 <Layout
@@ -123,11 +133,11 @@ const textimages = await sanityClient.fetch(`
 
   <h1>Textimages</h1>
 
-  {textimages.length === 0 ? (
+  {livres.length === 0 ? (
     <p class="vide">Aucun textimage disponible pour le moment.</p>
   ) : (
     <div class="liste">
-      {textimages.map((textimage: any) => (
+      {livres.map((textimage: any) => (
         <div class="textimage">
           {textimage.couverture && (
             <img
