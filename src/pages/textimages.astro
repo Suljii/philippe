@@ -15,8 +15,8 @@ const textimages = await sanityClient.fetch(`
     "slug": slug.current,
     intro,
     "pdfUrl": pdf.asset->url,
-    "couverture": coalesce(images[0].image, images[0].miniature),
-    "lqip": coalesce(images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
+    "couverture": coalesce(textimageCover, images[0].image, images[0].miniature),
+    "lqip": coalesce(textimageCover.asset->metadata.lqip, images[0].image.asset->metadata.lqip, images[0].miniature.asset->metadata.lqip)
   }
 `);
 
